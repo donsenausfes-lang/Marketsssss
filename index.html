@@ -298,10 +298,24 @@
       noCommission: true, allowMultiple: false, seller: "krayv"
     },
     {
+      id: 13, section: "eng",
+      name: "бот осинт", price: 15,
+      description: "средняя бд, красивое оформление",
+      image: "https://i.ibb.co/d4Z5MSzD/IMG-20260930-234626-968.jpg",
+      noCommission: true, allowMultiple: false, seller: "krayv"
+    },
+    {
+      id: 14, section: "eng",
+      name: "способ заработка звёзд", price: 15,
+      description: "5 минут - 15 звёзд",
+      image: "https://i.ibb.co/Pvv7c8sS/IMG-20260930-235100-900.jpg",
+      noCommission: true, allowMultiple: false, seller: "krayv"
+    },
+    {
       id: 9, section: "eng",
       name: "Деф (Arhangel)",
       price: 550,
-      description: "деф от @Arhangelovofficial",
+      description: "деф от @Arhangelovofficiall",
       image: "https://i.ibb.co/FqyLCnc4/ne-CZ-uejag-Jkpk2-UJ4-GS-8-Ohg0-IAI-YAfh-CBHweh-IGRm-RTGm0x-Ea-Hy-Pda4utdv-PD3dyteqr-BWcn69rhc03c-Ouz-Jk.jpg",
       noCommission: false, allowMultiple: false, seller: "arhangel",
       priceOptions: [
@@ -315,7 +329,7 @@
       id: 10, section: "eng",
       name: "обучение (Arhangel)",
       price: 500,
-      description: "обучение от @Arhangelovofficial",
+      description: "обучение от @Arhangelovofficiall",
       image: "https://i.ibb.co/FqyLCnc4/ne-CZ-uejag-Jkpk2-UJ4-GS-8-Ohg0-IAI-YAfh-CBHweh-IGRm-RTGm0x-Ea-Hy-Pda4utdv-PD3dyteqr-BWcn69rhc03c-Ouz-Jk.jpg",
       noCommission: false, allowMultiple: false, seller: "arhangel"
     },
@@ -386,320 +400,319 @@
   const tg = window.Telegram?.WebApp;
   if (tg) { tg.ready(); tg.expand(); }
 
-function switchTab(section, btn) {
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-  document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
-  btn.classList.add("active");
-  document.getElementById("tab-" + section).classList.add("active");
-}
-
-function toggleTheme() {
-  document.body.classList.toggle("dark");
-  document.getElementById("themeKnob").textContent =
-    document.body.classList.contains("dark") ? "🌙" : "☀️";
-}
-
-function getItem(id) { return cart.find(i => i.product.id === id); }
-
-function formatPrice(p) {
-  if (p.priceOptions && p.priceOptions.length) {
-    const min = Math.min(...p.priceOptions.map(o => o.value));
-    return "от " + min + " ⭐";
-  }
-  return p.price + " ⭐";
-}
-
-function renderSection(sectionId, containerId) {
-  const items = products.filter(p => p.section === sectionId);
-  document.getElementById(containerId).innerHTML = items.map(p => {
-    const inCart = getItem(p.id);
-    const disabled = inCart && !p.allowMultiple;
-    let btnText = "В корзину";
-    if (inCart && !p.allowMultiple) btnText = "Уже в корзине";
-    if (inCart && p.allowMultiple) btnText = "Ещё +1";
-
-    return `
-    <div class="card">
-      <div class="card-img-wrap" onclick="openProduct(${p.id})">
-        <img src="${p.image}" alt="${p.name}">
-      </div>
-      <h3 onclick="openProduct(${p.id})">${p.name}</h3>
-      <p class="desc" onclick="openProduct(${p.id})">${p.description}</p>
-      <p class="price" onclick="openProduct(${p.id})">${formatPrice(p)}</p>
-      <button onclick="event.stopPropagation(); addToCart(${p.id})" ${disabled ? "disabled" : ""}>
-        ${btnText}
-      </button>
-    </div>
-  `}).join("");
-}
-
-function renderGrid() {
-  renderSection("eng", "grid-eng");
-  renderSection("gifts", "grid-gifts");
-}
-
-function openProduct(id) {
-  const p = products.find(x => x.id === id);
-  if (!p) return;
-  currentProductId = id;
-  selectedOptionIdx = 0;
-
-  document.getElementById("pBigImg").src = p.image;
-  document.getElementById("pName").textContent = p.name;
-  document.getElementById("pDesc").textContent = p.description;
-
-  const block = document.getElementById("pPriceBlock");
-
-  if (p.priceOptions && p.priceOptions.length) {
-    block.innerHTML = `
-      <div class="price-options" id="priceOptions">
-        ${p.priceOptions.map((o, idx) => `
-          <div class="price-option ${idx === 0 ? "selected" : ""}"
-               onclick="selectOption(${idx})">
-            <span class="label">${o.label}</span>
-            <span class="value">${o.value} ⭐</span>
-          </div>
-        `).join("")}
-      </div>
-    `;
-  } else {
-    block.innerHTML = `<p class="product-single-price">${p.price} ⭐</p>`;
+  function switchTab(section, btn) {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("tab-" + section).classList.add("active");
   }
 
-  const btn = document.getElementById("pAddBtn");
-  const inCart = getItem(id);
-  if (inCart && !p.allowMultiple) {
-    btn.disabled = true;
-    btn.textContent = "Уже в корзине";
-  } else {
-    btn.disabled = false;
-    btn.textContent = "В корзину";
+  function toggleTheme() {
+    document.body.classList.toggle("dark");
+    document.getElementById("themeKnob").textContent =
+      document.body.classList.contains("dark") ? "🌙" : "☀️";
   }
 
-  document.getElementById("cartView").style.display = "none";
-  document.getElementById("checkoutView").style.display = "none";
-  document.getElementById("productView").style.display = "block";
-  document.getElementById("overlay").classList.add("open");
-}
+  function getItem(id) { return cart.find(i => i.product.id === id); }
 
-function selectOption(idx) {
-  selectedOptionIdx = idx;
-  document.querySelectorAll(".price-option").forEach((el, i) => {
-    el.classList.toggle("selected", i === idx);
-  });
-}
-
-function closeProduct() {
-  if (cart.length > 0) {
-    openCart();
-  } else {
-    document.getElementById("overlay").classList.remove("open");
-  }
-}
-
-function addFromProductView() {
-  const p = products.find(x => x.id === currentProductId);
-  if (!p) return;
-
-  let finalPrice = p.price;
-  let optionLabel = null;
-
-  if (p.priceOptions && p.priceOptions.length) {
-    const opt = p.priceOptions[selectedOptionIdx];
-    finalPrice = opt.value;
-    optionLabel = opt.label;
-  }
-
-  const existing = getItem(p.id);
-  if (existing) {
-    if (!p.allowMultiple) return;
-    existing.qty += 1;
-  } else {
-    cart.push({ product: p, qty: 1, chosenPrice: finalPrice, optionLabel });
-  }
-
-  renderGrid();
-  renderCart();
-  closeProduct();
-}
-
-function addToCart(id) {
-  const p = products.find(x => x.id === id);
-  const existing = getItem(id);
-  if (existing) {
-    if (!p.allowMultiple) return;
-    existing.qty += 1;
-  } else {
+  function formatPrice(p) {
     if (p.priceOptions && p.priceOptions.length) {
-      openProduct(id);
+      const min = Math.min(...p.priceOptions.map(o => o.value));
+      return "от " + min + " ⭐";
+    }
+    return p.price + " ⭐";
+  }
+
+  function renderSection(sectionId, containerId) {
+    const items = products.filter(p => p.section === sectionId);
+    document.getElementById(containerId).innerHTML = items.map(p => {
+      const inCart = getItem(p.id);
+      const disabled = inCart && !p.allowMultiple;
+      let btnText = "В корзину";
+      if (inCart && !p.allowMultiple) btnText = "Уже в корзине";
+      if (inCart && p.allowMultiple) btnText = "Ещё +1";
+
+      return `
+      <div class="card">
+        <div class="card-img-wrap" onclick="openProduct(${p.id})">
+          <img src="${p.image}" alt="${p.name}">
+        </div>
+        <h3 onclick="openProduct(${p.id})">${p.name}</h3>
+        <p class="desc" onclick="openProduct(${p.id})">${p.description}</p>
+        <p class="price" onclick="openProduct(${p.id})">${formatPrice(p)}</p>
+        <button onclick="event.stopPropagation(); addToCart(${p.id})" ${disabled ? "disabled" : ""}>
+          ${btnText}
+        </button>
+      </div>
+    `}).join("");
+  }
+
+  function renderGrid() {
+    renderSection("eng", "grid-eng");
+    renderSection("gifts", "grid-gifts");
+  }
+
+  function openProduct(id) {
+    const p = products.find(x => x.id === id);
+    if (!p) return;
+    currentProductId = id;
+    selectedOptionIdx = 0;
+
+    document.getElementById("pBigImg").src = p.image;
+    document.getElementById("pName").textContent = p.name;
+    document.getElementById("pDesc").textContent = p.description;
+
+    const block = document.getElementById("pPriceBlock");
+
+    if (p.priceOptions && p.priceOptions.length) {
+      block.innerHTML = `
+        <div class="price-options" id="priceOptions">
+          ${p.priceOptions.map((o, idx) => `
+            <div class="price-option ${idx === 0 ? "selected" : ""}"
+                 onclick="selectOption(${idx})">
+              <span class="label">${o.label}</span>
+              <span class="value">${o.value} ⭐</span>
+            </div>
+          `).join("")}
+        </div>
+      `;
+    } else {
+      block.innerHTML = `<p class="product-single-price">${p.price} ⭐</p>`;
+    }
+
+    const btn = document.getElementById("pAddBtn");
+    const inCart = getItem(id);
+    if (inCart && !p.allowMultiple) {
+      btn.disabled = true;
+      btn.textContent = "Уже в корзине";
+    } else {
+      btn.disabled = false;
+      btn.textContent = "В корзину";
+    }
+
+    document.getElementById("cartView").style.display = "none";
+    document.getElementById("checkoutView").style.display = "none";
+    document.getElementById("productView").style.display = "block";
+    document.getElementById("overlay").classList.add("open");
+  }
+
+  function selectOption(idx) {
+    selectedOptionIdx = idx;
+    document.querySelectorAll(".price-option").forEach((el, i) => {
+      el.classList.toggle("selected", i === idx);
+    });
+  }
+
+  function closeProduct() {
+    if (cart.length > 0) {
+      openCart();
+    } else {
+      document.getElementById("overlay").classList.remove("open");
+    }
+  }
+
+  function addFromProductView() {
+    const p = products.find(x => x.id === currentProductId);
+    if (!p) return;
+
+    let finalPrice = p.price;
+    let optionLabel = null;
+
+    if (p.priceOptions && p.priceOptions.length) {
+      const opt = p.priceOptions[selectedOptionIdx];
+      finalPrice = opt.value;
+      optionLabel = opt.label;
+    }
+
+    const existing = getItem(p.id);
+    if (existing) {
+      if (!p.allowMultiple) return;
+      existing.qty += 1;
+    } else {
+      cart.push({ product: p, qty: 1, chosenPrice: finalPrice, optionLabel });
+    }
+
+    renderGrid();
+    renderCart();
+    closeProduct();
+  }
+
+  function addToCart(id) {
+    const p = products.find(x => x.id === id);
+    const existing = getItem(id);
+    if (existing) {
+      if (!p.allowMultiple) return;
+      existing.qty += 1;
+    } else {
+      if (p.priceOptions && p.priceOptions.length) {
+        openProduct(id);
+        return;
+      }
+      cart.push({ product: p, qty: 1, chosenPrice: p.price, optionLabel: null });
+    }
+    renderGrid();
+    renderCart();
+  }
+
+  function increaseQty(id) {
+    const item = getItem(id);
+    if (!item || !item.product.allowMultiple) return;
+    item.qty += 1;
+    renderGrid();
+    renderCart();
+  }
+
+  function decreaseQty(id) {
+    const item = getItem(id);
+    if (!item) return;
+    item.qty -= 1;
+    if (item.qty <= 0) cart = cart.filter(i => i.product.id !== id);
+    renderGrid();
+    renderCart();
+  }
+
+  function removeFromCart(id) {
+    cart = cart.filter(i => i.product.id !== id);
+    renderGrid();
+    renderCart();
+  }
+
+  function linePrice(item) {
+    return (item.chosenPrice || item.product.price) * item.qty;
+  }
+  function baseSum() {
+    return cart.reduce((s, i) => s + linePrice(i), 0);
+  }
+  function commissionSum() {
+    return cart.reduce((s, i) => {
+      if (i.product.noCommission) return s;
+      return s + linePrice(i) * 0.2;
+    }, 0);
+  }
+  function totalSum() { return baseSum() + commissionSum(); }
+  function totalCount() { return cart.reduce((s, i) => s + i.qty, 0); }  function renderCart() {
+    document.getElementById("cartCount").textContent =
+      totalCount() > 0 ? "(" + totalCount() + ")" : "";
+    const c = document.getElementById("cartContent");
+    if (cart.length === 0) {
+      c.innerHTML = '<p class="empty">Пока пусто</p><button class="close" onclick="closeAll()">Закрыть</button>';
       return;
     }
-    cart.push({ product: p, qty: 1, chosenPrice: p.price, optionLabel: null });
-  }
-  renderGrid();
-  renderCart();
-}
 
-function increaseQty(id) {
-  const item = getItem(id);
-  if (!item || !item.product.allowMultiple) return;
-  item.qty += 1;
-  renderGrid();
-  renderCart();
-}
+    let itemsHtml = cart.map(i => {
+      const unitPrice = i.chosenPrice || i.product.price;
+      const lineSum = unitPrice * i.qty;
+      const comm = i.product.noCommission ? 0 : lineSum * 0.2;
+      const commText = i.product.noCommission
+        ? "Без комиссии"
+        : "+ " + comm.toFixed(0) + " ⭐ комиссия";
 
-function decreaseQty(id) {
-  const item = getItem(id);
-  if (!item) return;
-  item.qty -= 1;
-  if (item.qty <= 0) cart = cart.filter(i => i.product.id !== id);
-  renderGrid();
-  renderCart();
-}
+      const variantText = i.optionLabel ? ` (${i.optionLabel})` : "";
 
-function removeFromCart(id) {
-  cart = cart.filter(i => i.product.id !== id);
-  renderGrid();
-  renderCart();
-}
-
-function linePrice(item) {
-  return (item.chosenPrice || item.product.price) * item.qty;
-}
-function baseSum() {
-  return cart.reduce((s, i) => s + linePrice(i), 0);
-}
-function commissionSum() {
-  return cart.reduce((s, i) => {
-    if (i.product.noCommission) return s;
-    return s + linePrice(i) * 0.2;
-  }, 0);
-}
-function totalSum() { return baseSum() + commissionSum(); }
-function totalCount() { return cart.reduce((s, i) => s + i.qty, 0); }
- function renderCart() {
-  document.getElementById("cartCount").textContent =
-    totalCount() > 0 ? "(" + totalCount() + ")" : "";
-  const c = document.getElementById("cartContent");
-  if (cart.length === 0) {
-    c.innerHTML = '<p class="empty">Пока пусто</p><button class="close" onclick="closeAll()">Закрыть</button>';
-    return;
-  }
-
-  let itemsHtml = cart.map(i => {
-    const unitPrice = i.chosenPrice || i.product.price;
-    const lineSum = unitPrice * i.qty;
-    const comm = i.product.noCommission ? 0 : lineSum * 0.2;
-    const commText = i.product.noCommission
-      ? "Без комиссии"
-      : "+ " + comm.toFixed(0) + " ⭐ комиссия";
-
-    const variantText = i.optionLabel ? ` (${i.optionLabel})` : "";
-
-    const qtyControls = i.product.allowMultiple ? `
-      <div class="qty-controls">
-        <button onclick="decreaseQty(${i.product.id})">−</button>
-        <span class="val">${i.qty}</span>
-        <button onclick="increaseQty(${i.product.id})">+</button>
-      </div>
-    ` : "";
-
-    return `
-    <div class="item">
-      <div class="row1">
-        <div style="flex:1">
-          <div class="name">${i.product.name}${variantText}</div>
-          <div class="line">${unitPrice} ⭐ × ${i.qty} = ${lineSum} ⭐</div>
-          <div class="line">${commText}</div>
-          ${qtyControls}
+      const qtyControls = i.product.allowMultiple ? `
+        <div class="qty-controls">
+          <button onclick="decreaseQty(${i.product.id})">−</button>
+          <span class="val">${i.qty}</span>
+          <button onclick="increaseQty(${i.product.id})">+</button>
         </div>
-        <button class="remove" onclick="removeFromCart(${i.product.id})">✕</button>
+      ` : "";
+
+      return `
+      <div class="item">
+        <div class="row1">
+          <div style="flex:1">
+            <div class="name">${i.product.name}${variantText}</div>
+            <div class="line">${unitPrice} ⭐ × ${i.qty} = ${lineSum} ⭐</div>
+            <div class="line">${commText}</div>
+            ${qtyControls}
+          </div>
+          <button class="remove" onclick="removeFromCart(${i.product.id})">✕</button>
+        </div>
+      </div>`;
+    }).join("");
+
+    const base = baseSum();
+    const comm = commissionSum();
+    const total = base + comm;
+
+    itemsHtml += `
+      <div class="totals">
+        <div class="row"><span>Товары:</span><span>${base} ⭐</span></div>
+        ${comm > 0 ? `<div class="row commission"><span>Комиссия Telegram (+20%):</span><span>+${comm.toFixed(0)} ⭐</span></div>` : ""}
+        <div class="row final"><span>Итого:</span><span>${total.toFixed(0)} ⭐</span></div>
       </div>
-    </div>`;
-  }).join("");
-
-  const base = baseSum();
-  const comm = commissionSum();
-  const total = base + comm;
-
-  itemsHtml += `
-    <div class="totals">
-      <div class="row"><span>Товары:</span><span>${base} ⭐</span></div>
-      ${comm > 0 ? `<div class="row commission"><span>Комиссия Telegram (+20%):</span><span>+${comm.toFixed(0)} ⭐</span></div>` : ""}
-      <div class="row final"><span>Итого:</span><span>${total.toFixed(0)} ⭐</span></div>
-    </div>
-    <button class="order" onclick="showCheckout()">Оформить заказ</button>
-    <button class="close" onclick="closeAll()">Закрыть</button>
-  `;
-  c.innerHTML = itemsHtml;
-}
-
-function openCart() {
-  renderCart();
-  document.getElementById("productView").style.display = "none";
-  document.getElementById("checkoutView").style.display = "none";
-  document.getElementById("cartView").style.display = "block";
-  document.getElementById("overlay").classList.add("open");
-}
-
-function overlayClick(e) {
-  if (e.target.id !== "overlay") return;
-  closeAll();
-}
-
-function closeAll() {
-  document.getElementById("overlay").classList.remove("open");
-}
-
-function showCheckout() {
-  if (cart.length === 0) return;
-
-  const sums = { krayv: 0, arhangel: 0, bitch: 0 };
-  cart.forEach(i => {
-    const unitPrice = i.chosenPrice || i.product.price;
-    const lineSum = unitPrice * i.qty;
-    const comm = i.product.noCommission ? 0 : lineSum * 0.2;
-    const total = lineSum + comm;
-    const seller = i.product.seller || "krayv";
-    sums[seller] += total;
-  });
-
-  const active = Object.keys(sums).filter(k => sums[k] > 0);
-  const links = {
-    krayv: "@krayverov",
-    arhangel: "@arhangelovofficial",
-    bitch: "@bitchverification"
-  };
-
-  const names = active.map(k => `<span class="link">${links[k]}</span>`).join(" и ");
-  document.getElementById("payToBlock").innerHTML = "Напишите в личку " + names;
-
-  if (active.length === 1) {
-    const k = active[0];
-    document.getElementById("payDetailsBlock").innerHTML =
-      `Отправьте звёзды подарками на сумму <span class="amount">${sums[k].toFixed(0)}</span> ⭐ ` +
-      `на <span class="link">${links[k]}</span> и отметьте под 1 из подарков то, что вы купили.<br>` +
-      `Пример: колечко и ракету с подписью «за деф»`;
-  } else {
-    let html = "Отправьте звёзды подарками разным продавцам:<br>";
-    active.forEach(k => {
-      html += `• <span class="link">${links[k]}</span> — <span class="amount">${sums[k].toFixed(0)}</span> ⭐<br>`;
-    });
-    html += "И подпишите, что именно вы купили у каждого.";
-    document.getElementById("payDetailsBlock").innerHTML = html;
+      <button class="order" onclick="showCheckout()">Оформить заказ</button>
+      <button class="close" onclick="closeAll()">Закрыть</button>
+    `;
+    c.innerHTML = itemsHtml;
   }
 
-  document.getElementById("cartView").style.display = "none";
-  document.getElementById("productView").style.display = "none";
-  document.getElementById("checkoutView").style.display = "block";
-}
+  function openCart() {
+    renderCart();
+    document.getElementById("productView").style.display = "none";
+    document.getElementById("checkoutView").style.display = "none";
+    document.getElementById("cartView").style.display = "block";
+    document.getElementById("overlay").classList.add("open");
+  }
 
-function backToCart() {
-  openCart();
-}
+  function overlayClick(e) {
+    if (e.target.id !== "overlay") return;
+    closeAll();
+  }
 
-renderGrid();
-renderCart();
+  function closeAll() {
+    document.getElementById("overlay").classList.remove("open");
+  }
+
+  function showCheckout() {
+    if (cart.length === 0) return;
+
+    const sums = { krayv: 0, arhangel: 0, bitch: 0 };
+    cart.forEach(i => {
+      const unitPrice = i.chosenPrice || i.product.price;
+      const lineSum = unitPrice * i.qty;
+      const comm = i.product.noCommission ? 0 : lineSum * 0.2;
+      const total = lineSum + comm;
+      const seller = i.product.seller || "krayv";
+      sums[seller] += total;
+    });
+
+    const active = Object.keys(sums).filter(k => sums[k] > 0);
+    const links = {
+      krayv: "@krayverov",
+      arhangel: "@Arhangelovofficiall",
+      bitch: "@bitchverification"
+    };
+
+    const names = active.map(k => `<span class="link">${links[k]}</span>`).join(" и ");
+    document.getElementById("payToBlock").innerHTML = "Напишите в личку " + names;
+
+    if (active.length === 1) {
+      const k = active[0];
+      document.getElementById("payDetailsBlock").innerHTML =
+        `Отправьте звёзды подарками на сумму <span class="amount">${sums[k].toFixed(0)}</span> ⭐ ` +
+        `на <span class="link">${links[k]}</span> и отметьте под 1 из подарков то, что вы купили.<br>` +
+        `Пример: колечко и ракету с подписью «за деф»`;
+    } else {
+      let html = "Отправьте звёзды подарками разным продавцам:<br>";
+      active.forEach(k => {
+        html += `• <span class="link">${links[k]}</span> — <span class="amount">${sums[k].toFixed(0)}</span> ⭐<br>`;
+      });
+      html += "И подпишите, что именно вы купили у каждого.";
+      document.getElementById("payDetailsBlock").innerHTML = html;
+    }
+
+    document.getElementById("cartView").style.display = "none";
+    document.getElementById("productView").style.display = "none";
+    document.getElementById("checkoutView").style.display = "block";
+  }
+
+  function backToCart() {
+    openCart();
+  }
+
+  renderGrid();
+  renderCart();
 </script>
 
 </body>
