@@ -118,6 +118,13 @@
   .card h3 { font-size: 15px; margin: 0 0 4px 0; }
   .card .desc { font-size: 12px; color: var(--muted); margin: 0 0 6px 0; flex: 1; }
   .card .price { font-size: 15px; font-weight: 600; margin: 0 0 8px 0; }
+  .card .old-price {
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: line-through;
+    margin-left: 6px;
+    font-weight: 400;
+  }
   .card button {
     width: 100%; padding: 8px 12px; border-radius: 8px; border: none;
     background: var(--accent); color: var(--accent-text);
@@ -221,6 +228,13 @@
   .price-option .label { font-weight: 600; }
   .price-option .value { font-weight: 700; color: var(--accent); }
   .product-single-price { font-size: 20px; font-weight: 800; color: var(--accent); margin: 0 0 16px 0; }
+  .product-single-price .old-price {
+    font-size: 14px;
+    color: var(--muted);
+    text-decoration: line-through;
+    margin-left: 8px;
+    font-weight: 400;
+  }
   .add-btn {
     width: 100%; padding: 14px 0; border-radius: 12px; border: none;
     background: var(--accent); color: var(--accent-text);
@@ -370,20 +384,6 @@
       noCommission: true, allowMultiple: false, seller: "krayv"
     },
     {
-      id: 2, section: "eng",
-      name: "Деф", price: 150,
-      description: "защита от krayverov",
-      image: "https://i.ibb.co/1tSVqcPq/Rz9qwz6-TROMzj-GQ0-Qe-AGTCjdo3y4-KJe-Im-Hkz-Db-Wqt-E8hig-q-Chhb77-Okx-NDdfv-ZXugl-Bmn-SPW0-NNyi-KYYGRVOv.jpg",
-      noCommission: true, allowMultiple: false, seller: "krayv"
-    },
-    {
-      id: 3, section: "eng",
-      name: "обучение", price: 150,
-      description: "обучение от Krayverov",
-      image: "https://i.ibb.co/1tSVqcPq/Rz9qwz6-TROMzj-GQ0-Qe-AGTCjdo3y4-KJe-Im-Hkz-Db-Wqt-E8hig-q-Chhb77-Okx-NDdfv-ZXugl-Bmn-SPW0-NNyi-KYYGRVOv.jpg",
-      noCommission: true, allowMultiple: false, seller: "krayv"
-    },
-    {
       id: 8, section: "eng",
       name: "бот с огромной бд", price: 15,
       description: "огромная бд и красивое оформление",
@@ -403,6 +403,50 @@
       price: 25,
       description: "приватка с кучей интересного",
       image: "https://i.ibb.co/jkkGBtrN/b19c0ca2f3415ad13f14c100f7133e07.jpg",
+      noCommission: true, allowMultiple: false, seller: "krayv"
+    },
+    {
+      id: 16, section: "eng",
+      name: "бот химера", price: 15,
+      description: "только бот без вопросов и тд",
+      image: "https://i.ibb.co/gMP30vFT/IMG-20261001-135425-006.jpg",
+      noCommission: true, allowMultiple: false, seller: "krayv"
+    },
+    {
+      id: 17, section: "eng",
+      name: "logger бот", price: 15,
+      description: "бот логгер",
+      image: "https://i.ibb.co/60bYwKsj/channels4-profile.jpg",
+      oldPrice: 25,
+      noCommission: true, allowMultiple: false, seller: "krayv"
+    },
+    {
+      id: 18, section: "eng",
+      name: "бот с хорошим бд", price: 15,
+      description: "средняя бд хороший бот",
+      image: "https://i.ibb.co/dJm4DBHG/IMG-20261001-132658-129.jpg",
+      oldPrice: 25,
+      noCommission: true, allowMultiple: false, seller: "krayv"
+    },
+    {
+      id: 19, section: "eng",
+      name: "накрут бот", price: 15,
+      description: "накрут подписчики, лайки, реак не только тг",
+      image: "https://i.ibb.co/jPXb25jf/IMG-20261001-140715-429.jpg",
+      noCommission: true, allowMultiple: false, seller: "krayv"
+    },
+    {
+      id: 2, section: "eng",
+      name: "Деф", price: 150,
+      description: "защита от krayverov",
+      image: "https://i.ibb.co/1tSVqcPq/Rz9qwz6-TROMzj-GQ0-Qe-AGTCjdo3y4-KJe-Im-Hkz-Db-Wqt-E8hig-q-Chhb77-Okx-NDdfv-ZXugl-Bmn-SPW0-NNyi-KYYGRVOv.jpg",
+      noCommission: true, allowMultiple: false, seller: "krayv"
+    },
+    {
+      id: 3, section: "eng",
+      name: "обучение", price: 150,
+      description: "обучение от Krayverov",
+      image: "https://i.ibb.co/1tSVqcPq/Rz9qwz6-TROMzj-GQ0-Qe-AGTCjdo3y4-KJe-Im-Hkz-Db-Wqt-E8hig-q-Chhb77-Okx-NDdfv-ZXugl-Bmn-SPW0-NNyi-KYYGRVOv.jpg",
       noCommission: true, allowMultiple: false, seller: "krayv"
     },
     {
@@ -572,7 +616,10 @@
         </div>
         <h3 onclick="openProduct(${p.id})">${p.name}</h3>
         <p class="desc" onclick="openProduct(${p.id})">${p.description}</p>
-        <p class="price" onclick="openProduct(${p.id})">${formatPrice(p)}</p>
+        <p class="price" onclick="openProduct(${p.id})">
+          ${formatPrice(p)}
+          ${p.oldPrice ? `<span class="old-price">${p.oldPrice} ⭐</span>` : ""}
+        </p>
         <button onclick="event.stopPropagation(); addToCart(${p.id})" ${disabled ? "disabled" : ""}>
           ${btnText}
         </button>
@@ -610,7 +657,12 @@
         </div>
       `;
     } else {
-      block.innerHTML = `<p class="product-single-price">${p.price} ⭐</p>`;
+      block.innerHTML = `
+        <p class="product-single-price">
+          ${p.price} ⭐
+          ${p.oldPrice ? `<span class="old-price">${p.oldPrice} ⭐</span>` : ""}
+        </p>
+      `;
     }
 
     const btn = document.getElementById("pAddBtn");
