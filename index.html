@@ -702,6 +702,8 @@
     if (cart.length === 0) return;
 
     const sellers = { krayv: 0, arhangel: 0, bitch: 0, clardus: 0 };
+    let hasAd = false;
+
     cart.forEach(i => {
       const unitPrice = i.chosenPrice || i.product.price;
       const lineSum = unitPrice * i.qty;
@@ -712,6 +714,7 @@
         if (i.product.name && i.product.name.includes("Arhangel")) seller = "arhangel";
         else if (i.product.name && i.product.name.includes("с!иртей")) seller = "bitch";
       }
+      if (seller === "clardus") hasAd = true;
       sellers[seller] += total;
     });
 
@@ -723,22 +726,29 @@
       clardus: "@clardus"
     };
 
-    const names = active.map(k => `<span class="link">${links[k]}</span>`).join(" и ");
-    document.getElementById("payToBlock").innerHTML = "Напишите в личку " + names;
-
-    if (active.length === 1) {
-      const k = active[0];
+    if (hasAd) {
+      document.getElementById("payToBlock").innerHTML =
+        "Напишите в личку <span class='link'>@clardus</span>";
       document.getElementById("payDetailsBlock").innerHTML =
-        `Отправьте звёзды подарками на сумму <span class="amount">${sellers[k].toFixed(0)}</span> ⭐ ` +
-        `на <span class="link">${links[k]}</span> и отметьте под 1 из подарков то, что вы купили.<br>` +
-        `Пример: колечко и ракету с подписью «за деф»`;
+        "Обсудите с ним условия рекламы и отправьте звёзды подарками.";
     } else {
-      let html = "Отправьте звёзды подарками разным продавцам:<br>";
-      active.forEach(k => {
-        html += `• <span class="link">${links[k]}</span> — <span class="amount">${sellers[k].toFixed(0)}</span> ⭐<br>`;
-      });
-      html += "И подпишите, что именно вы купили у каждого.";
-      document.getElementById("payDetailsBlock").innerHTML = html;
+      const names = active.map(k => `<span class="link">${links[k]}</span>`).join(" и ");
+      document.getElementById("payToBlock").innerHTML = "Напишите в личку " + names;
+
+      if (active.length === 1) {
+        const k = active[0];
+        document.getElementById("payDetailsBlock").innerHTML =
+          `Отправьте звёзды подарками на сумму <span class="amount">${sellers[k].toFixed(0)}</span> ⭐ ` +
+          `на <span class="link">${links[k]}</span> и отметьте под 1 из подарков то, что вы купили.<br>` +
+          `Пример: колечко и ракету с подписью «за деф»`;
+      } else {
+        let html = "Отправьте звёзды подарками разным продавцам:<br>";
+        active.forEach(k => {
+          html += `• <span class="link">${links[k]}</span> — <span class="amount">${sellers[k].toFixed(0)}</span> ⭐<br>`;
+        });
+        html += "И подпишите, что именно вы купили у каждого.";
+        document.getElementById("payDetailsBlock").innerHTML = html;
+      }
     }
 
     openSheet("checkoutView");
