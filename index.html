@@ -768,9 +768,50 @@
           alert("Оплата не прошла");
         }
       });
-    } catch (e) {
-      alert("Ошибка сети: " + e.message);
+        } catch (e) {
+      showManualPayment(totalSum());
     }
+  }
+
+  function showManualPayment(total) {
+    const sheet = document.querySelector(".sheet");
+    document.querySelectorAll(".sheet > div").forEach(el => el.style.display = "none");
+
+    // Создаём блок, если его ещё нет
+    let manualView = document.getElementById("manualPayView");
+    if (!manualView) {
+      manualView = document.createElement("div");
+      manualView.id = "manualPayView";
+      sheet.appendChild(manualView);
+    }
+
+    manualView.innerHTML = `
+      <h2>Оплата вручную</h2>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          В данный момент онлайн-оплата недоступна.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          Напишите <span class="link">@krayverov</span>
+          и отправьте звёзды подарками на сумму
+          <span class="amount">${total} ⭐</span>.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          В подписи к подарку укажите, что именно вы купили.
+        </div>
+      </div>
+      <button class="close" onclick="closeAll()">Закрыть</button>
+    `;
+
+    manualView.style.display = "block";
+    document.getElementById("overlay").classList.add("open");
   }
 
   // ==== СТАРТ ====
