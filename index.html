@@ -158,13 +158,11 @@
 <div class="overlay" id="overlay" onclick="overlayClick(event)">
   <div class="sheet" onclick="event.stopPropagation()">
 
-    <!-- КОРЗИНА -->
     <div id="cartView" style="display:none;">
       <h2>Корзина</h2>
       <div id="cartContent"></div>
     </div>
 
-    <!-- КАРТОЧКА ТОВАРА -->
     <div id="productView" style="display:none;">
       <div class="card-img-wrap" style="aspect-ratio:1/1;border-radius:14px;">
         <img id="pBigImg" src="" alt="">
@@ -176,7 +174,6 @@
       <button class="close" onclick="closeProduct()">← Назад</button>
     </div>
 
-    <!-- НАСТРОЙКИ -->
     <div id="settingsView" style="display:none;">
       <h2>⚙️ Настройки</h2>
       <p style="font-size:13px;color:var(--muted);margin:0 0 8px 0;">Тема оформления</p>
@@ -194,7 +191,6 @@
       <button class="close" onclick="closeAll()">Закрыть</button>
     </div>
 
-    <!-- ОФОРМЛЕНИЕ ЗАКАЗА -->
     <div id="checkoutView" style="display:none;">
       <h2>Оформление заказа</h2>
       <div class="step">
@@ -209,7 +205,15 @@
         <div class="step-num">3</div>
         <div class="step-text" id="payDetailsBlock"></div>
       </div>
-      <button class="order" style="background:var(--green);" onclick="payWithStars()">Оплатить звёздами ⭐</button>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          Ожидайте проверки и выдачи заказа вплоть до 4 часов.
+          Если мы опоздаем — вернём <b>10%</b> от заказа
+          на все товары, кроме NFT.
+        </div>
+      </div>
+      <div style="margin-top:14px;margin-bottom:6px;text-align:center;font-size:14px;font-weight:600;color:var(--green);">Удачных покупок 🛍️</div>
       <button class="close" onclick="backToCart()">← Назад в корзину</button>
     </div>
 
@@ -217,17 +221,14 @@
 </div>
 
 <script>
-  const SERVER = "https://krayvserver-ducpy7kj.b4a.run";
-   const tg = window.Telegram?.WebApp;
+  const tg = window.Telegram?.WebApp;
   if (tg) { tg.ready(); tg.expand(); }
 
   let cart = [];
   let currentProductId = null;
   let selectedOptionIdx = 0;
 
-  // ========== ТОВАРЫ ==========
   const products = [
-    // === Инженерия ===
     {
       id: 1, section: "eng",
       name: "софт sessionspam", price: 50,
@@ -281,9 +282,17 @@
     },
     {
       id: 19, section: "eng",
-      name: "накрут бот", price: 1,
+      name: "накрут бот", price: 15,
       description: "накрут подписчики, лайки, реак не только тг",
       image: "https://i.ibb.co/jPXb25jf/IMG-20261001-140715-429.jpg",
+      noCommission: true, allowMultiple: false
+    },
+    {
+      id: 20, section: "eng",
+      name: "Реклама", price: 0,
+      description: "реклама вашего проекта в нашем маркете",
+      image: "https://i.ibb.co/Pvr5psMC/IMG-20261001-102942.jpg",
+      isNegotiable: true,
       noCommission: true, allowMultiple: false
     },
     {
@@ -347,7 +356,6 @@
         { label: "Приват", value: 525 }
       ]
     },
-    // === Подарки ===
     {
       id: 4, section: "gifts",
       name: "мишка от Krayverov", price: 25,
@@ -385,7 +393,6 @@
     }
   ];
 
-  // ==== ТЕМА ====
   (function() {
     const saved = localStorage.getItem("krayv-theme") || "dark";
     document.body.classList.remove("dark", "beige");
@@ -400,7 +407,6 @@
     localStorage.setItem("krayv-theme", name);
   }
 
-  // ==== ВКЛАДКИ ====
   function switchTab(section, btn) {
     document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
     document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
@@ -408,7 +414,6 @@
     document.getElementById("tab-" + section).classList.add("active");
   }
 
-  // ==== ОКНА ====
   function openSheet(viewId) {
     document.querySelectorAll(".sheet > div").forEach(el => el.style.display = "none");
     document.getElementById(viewId).style.display = "block";
@@ -428,8 +433,8 @@
     openSheet("settingsView");
   }
 
-  // ==== РЕНДЕР ====
   function formatPrice(p) {
+    if (p.isNegotiable) return "Договорная";
     if (p.priceOptions && p.priceOptions.length) {
       const min = Math.min(...p.priceOptions.map(o => o.value));
       return "от " + min + " ⭐";
@@ -468,7 +473,7 @@
     renderSection("eng", "grid-eng");
     renderSection("gifts", "grid-gifts");
   }
-   // ==== КАРТОЧКА ТОВАРА ====
+
   function openProduct(id) {
     const p = products.find(x => x.id === id);
     if (!p) return;
@@ -494,8 +499,13 @@
         </div>
       `;
     } else {
-      let priceHtml = p.price + " ⭐";
-      if (p.oldPrice) priceHtml += ` <span class="old-price">${p.oldPrice} ⭐</span>`;
+      let priceHtml;
+      if (p.isNegotiable) {
+        priceHtml = "Договорная";
+      } else {
+        priceHtml = p.price + " ⭐";
+        if (p.oldPrice) priceHtml += ` <span class="old-price">${p.oldPrice} ⭐</span>`;
+      }
       block.innerHTML = `<p style="font-size:20px;font-weight:800;color:var(--accent);margin:0 0 16px 0;">${priceHtml}</p>`;
     }
 
@@ -553,7 +563,6 @@
     closeProduct();
   }
 
-  // ==== КОРЗИНА ====
   function getItem(id) {
     return cart.find(i => i.product.id === id);
   }
@@ -562,7 +571,6 @@
     const p = products.find(x => x.id === id);
     if (!p) return;
 
-    // Если у товара есть варианты цены — открываем карточку для выбора
     if (p.priceOptions && p.priceOptions.length) {
       openProduct(id);
       return;
@@ -685,136 +693,53 @@
     openSheet("cartView");
   }
 
-  // ==== ОФОРМЛЕНИЕ ====
   function showCheckout() {
     if (cart.length === 0) return;
-    const total = totalSum();
-    document.getElementById("payToBlock").innerHTML =
-      "Оплатите <span class='amount'>" + total.toFixed(0) + " ⭐</span> — откроется окно оплаты Telegram.";
-    document.getElementById("payDetailsBlock").innerHTML =
-      "После оплаты заказ будет отправлен. Спасибо за покупку!";
+
+    const sellers = { krayv: 0, arhangel: 0, bitch: 0 };
+    cart.forEach(i => {
+      const unitPrice = i.chosenPrice || i.product.price;
+      const lineSum = unitPrice * i.qty;
+      const comm = i.product.noCommission ? 0 : lineSum * 0.2;
+      const total = lineSum + comm;
+      let seller = "krayv";
+      if (i.product.name && i.product.name.includes("Arhangel")) seller = "arhangel";
+      else if (i.product.name && i.product.name.includes("с!иртей")) seller = "bitch";
+      sellers[seller] += total;
+    });
+
+    const active = Object.keys(sellers).filter(k => sellers[k] > 0);
+    const links = {
+      krayv: "@krayverov",
+      arhangel: "@Arhangelovofficiall",
+      bitch: "@bitchverification"
+    };
+
+    const names = active.map(k => `<span class="link">${links[k]}</span>`).join(" и ");
+    document.getElementById("payToBlock").innerHTML = "Напишите в личку " + names;
+
+    if (active.length === 1) {
+      const k = active[0];
+      document.getElementById("payDetailsBlock").innerHTML =
+        `Отправьте звёзды подарками на сумму <span class="amount">${sellers[k].toFixed(0)}</span> ⭐ ` +
+        `на <span class="link">${links[k]}</span> и отметьте под 1 из подарков то, что вы купили.<br>` +
+        `Пример: колечко и ракету с подписью «за деф»`;
+    } else {
+      let html = "Отправьте звёзды подарками разным продавцам:<br>";
+      active.forEach(k => {
+        html += `• <span class="link">${links[k]}</span> — <span class="amount">${sellers[k].toFixed(0)}</span> ⭐<br>`;
+      });
+      html += "И подпишите, что именно вы купили у каждого.";
+      document.getElementById("payDetailsBlock").innerHTML = html;
+    }
+
     openSheet("checkoutView");
   }
 
   function backToCart() {
     openCart();
   }
-   // ==== ОПЛАТА ЗВЁЗДАМИ ====
-  async function payWithStars() {
-    const total = totalSum();
-    if (total <= 0) {
-      alert("Корзина пуста");
-      return;
-    }
 
-    if (!tg?.initDataUnsafe?.user) {
-      alert("Открой приложение через Telegram-бота");
-      return;
-    }
-
-    const userId = tg.initDataUnsafe.user.id;
-
-    try {
-      const res = await fetch(SERVER + "/api/pay", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: userId,
-          amount: Math.round(total),
-          title: "Заказ в Krayv Shop"
-        })
-      });
-
-      const data = await res.json();
-
-      if (!data.invoiceLink) {
-        alert("Не удалось создать счёт: " + (data.error || "ошибка"));
-        return;
-      }
-
-      if (!tg?.openInvoice) {
-        alert("Открой приложение через Telegram-бота");
-        return;
-      }
-
-      tg.openInvoice(data.invoiceLink, async (status) => {
-        if (status === "paid") {
-          try {
-            await fetch(SERVER + "/api/order", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                userId: userId,
-                items: cart.map(i => ({
-                  id: i.product.id,
-                  name: i.product.name,
-                  qty: i.qty,
-                  price: i.chosenPrice || i.product.price,
-                  optionLabel: i.optionLabel || null
-                })),
-                total: Math.round(totalSum())
-              })
-            });
-          } catch (e) {}
-
-          alert("Оплачено! Спасибо 🎉");
-          cart = [];
-          renderGrid();
-          renderCart();
-          closeAll();
-        } else if (status === "cancelled") {
-          alert("Оплата отменена");
-        } else {
-          alert("Оплата не прошла");
-        }
-      });
-        } catch (e) {
-      showManualPayment(totalSum());
-    }
-  }
-
-  function showManualPayment(total) {
-    const sheet = document.querySelector(".sheet");
-    document.querySelectorAll(".sheet > div").forEach(el => el.style.display = "none");
-
-    // Создаём блок, если его ещё нет
-    let manualView = document.getElementById("manualPayView");
-    if (!manualView) {
-      manualView = document.createElement("div");
-      manualView.id = "manualPayView";
-      sheet.appendChild(manualView);
-    }
-
-    manualView.innerHTML = `
-      <h2>Оплата вручную</h2>
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-text">
-          В данный момент онлайн-оплата недоступна.
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-text">
-          Напишите <span class="link">@krayverov</span>
-          и отправьте звёзды подарками на сумму
-          <span class="amount">${total} ⭐</span>.
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-text">
-          В подписи к подарку укажите, что именно вы купили.
-        </div>
-      </div>
-      <button class="close" onclick="closeAll()">Закрыть</button>
-    `;
-
-    manualView.style.display = "block";
-    document.getElementById("overlay").classList.add("open");
-  }
-
-  // ==== СТАРТ ====
   renderGrid();
   renderCart();
 </script>
