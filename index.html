@@ -6,21 +6,20 @@
 <title>Krayv Shop</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-  * { box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease; }
+  * { box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease; }
   :root {
     --bg: #fff; --text: #000; --card-bg: #f5f5f7;
     --card-border: rgba(0,0,0,0.08); --muted: #888;
     --accent: #2481cc; --accent-text: #fff;
     --overlay: rgba(0,0,0,0.5); --qty-bg: #e5e5e5;
     --remove-bg: #ffdddd; --remove-text: #c00; --divider: #eee;
-    --green: #22c55e; --shadow: 0 4px 16px rgba(0,0,0,0.1);
+    --green: #22c55e;
   }
   body.dark {
     --bg: #0f0f14; --text: #fff; --card-bg: #1c1c22;
     --card-border: rgba(255,255,255,0.08); --muted: #999;
     --overlay: rgba(0,0,0,0.7); --qty-bg: #2c2c33;
     --remove-bg: #4a1f1f; --remove-text: #ff8888; --divider: #2a2a33;
-    --shadow: 0 4px 16px rgba(0,0,0,0.4);
   }
   body.beige {
     --bg: #f0e6d2; --text: #3a2f1e; --card-bg: #e6d9bf;
@@ -32,44 +31,32 @@
   body {
     margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background: var(--bg); color: var(--text);
-    padding: 16px; padding-top: 70px; padding-bottom: 100px; min-height: 100vh;
+    padding: 16px; padding-top: 60px; padding-bottom: 100px; min-height: 100vh;
   }
-  .top-bar {
-    position: fixed; top: 14px; right: 14px;
-    display: flex; gap: 8px; z-index: 200;
-  }
+  .top-bar { position: fixed; top: 14px; right: 14px; display: flex; gap: 8px; z-index: 200; }
   .icon-btn {
     width: 42px; height: 42px; border-radius: 50%;
     background: var(--card-bg); border: 1px solid var(--card-border);
     display: flex; align-items: center; justify-content: center;
     font-size: 18px; cursor: pointer; overflow: hidden;
-    box-shadow: var(--shadow);
   }
-  .icon-btn img { width: 100%; height: 100%; object-fit: cover; }
   .shop-title { font-size: 26px; font-weight: 800; color: #2481cc; margin: 0 0 10px 0; }
-  .tabs {
-    display: flex; gap: 6px; margin-bottom: 18px;
-    border-bottom: 1px solid var(--divider); overflow-x: auto;
-  }
+  .tabs { display: flex; gap: 6px; margin-bottom: 18px; border-bottom: 1px solid var(--divider); }
   .tab {
-    flex: 1; min-width: 90px; padding: 10px 6px; text-align: center;
+    flex: 1; padding: 10px 6px; text-align: center;
     font-size: 13px; font-weight: 600; color: var(--muted);
     background: transparent; border: none;
     border-bottom: 2px solid transparent; cursor: pointer;
-    white-space: nowrap;
   }
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-  .tab-content { display: none; animation: fadeIn 0.3s ease; }
+  .tab-content { display: none; }
   .tab-content.active { display: block; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
   .card {
-    border: 1px solid var(--card-border); border-radius: 14px;
+    border: 1px solid var(--card-border); border-radius: 12px;
     padding: 10px; background: var(--card-bg); cursor: pointer;
-    box-shadow: var(--shadow);
   }
-  .card:active { transform: scale(0.98); }
-  .card-img-wrap { width: 100%; aspect-ratio: 1/1; overflow: hidden; border-radius: 10px; margin-bottom: 8px; background: #000; }
+  .card-img-wrap { width: 100%; aspect-ratio: 1/1; overflow: hidden; border-radius: 8px; margin-bottom: 8px; background: #000; }
   .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .card h3 { font-size: 15px; margin: 0 0 4px 0; }
   .card .desc { font-size: 12px; color: var(--muted); margin: 0 0 6px 0; }
@@ -80,83 +67,50 @@
     font-size: 14px; cursor: pointer;
   }
   .card button:disabled { background: var(--qty-bg); color: var(--muted); cursor: not-allowed; }
+  .card .old-price { font-size: 12px; color: var(--muted); text-decoration: line-through; margin-left: 6px; font-weight: 400; }
   .floating {
     position: fixed; bottom: 20px; right: 20px;
     padding: 12px 20px; border-radius: 30px; border: none;
     background: var(--accent); color: var(--accent-text);
     font-size: 15px; font-weight: 600;
-    box-shadow: var(--shadow); cursor: pointer; z-index: 50;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25); cursor: pointer; z-index: 50;
   }
   .overlay {
     position: fixed; inset: 0; background: var(--overlay);
     display: none; align-items: flex-end; z-index: 100;
   }
-  .overlay.open { display: flex; animation: fadeIn 0.25s ease; }
+  .overlay.open { display: flex; }
   .sheet {
     width: 100%; max-height: 92vh; overflow-y: auto;
-    background: var(--bg); border-top-left-radius: 24px; border-top-right-radius: 24px;
-    padding: 22px; animation: slideUp 0.3s ease;
+    background: var(--bg); border-top-left-radius: 20px; border-top-right-radius: 20px;
+    padding: 20px;
   }
-  @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-  .sheet h2 { margin: 0 0 14px 0; font-size: 20px; }
+  .sheet h2 { margin: 0 0 12px 0; font-size: 20px; }
   .close {
-    width: 100%; margin-top: 12px; padding: 12px;
+    width: 100%; margin-top: 12px; padding: 10px;
     border-radius: 12px; border: none; background: transparent;
     color: var(--muted); font-size: 14px; cursor: pointer;
   }
   .order {
-    width: 100%; margin-top: 10px; padding: 14px;
+    width: 100%; margin-top: 12px; padding: 14px;
     border-radius: 12px; border: none;
     background: var(--accent); color: var(--accent-text);
-    font-size: 15px; font-weight: 600; cursor: pointer;
-    box-shadow: var(--shadow);
+    font-size: 16px; font-weight: 600; cursor: pointer;
   }
-  input, textarea, select {
-    width: 100%; padding: 12px;
-    border-radius: 12px;
-    border: 1px solid var(--card-border);
-    background: var(--card-bg); color: var(--text);
-    font-size: 14px; outline: none; margin-bottom: 10px;
-    font-family: inherit;
-  }
-  .user-card {
-    display: flex; flex-direction: column; align-items: center; text-align: center;
-    padding: 24px 16px; border-radius: 16px;
-    background: var(--card-bg); border: 1px solid var(--card-border);
-    margin-bottom: 14px; box-shadow: var(--shadow);
-  }
-  .avatar { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; margin-bottom: 12px; border: 3px solid var(--accent); }
-  .user-name { font-size: 20px; font-weight: 700; }
-  .user-id { font-size: 13px; color: var(--muted); margin-top: 4px; }
-  .balance-box {
-    margin-top: 14px; padding: 12px 20px; border-radius: 12px;
-    background: var(--bg); border: 1px solid var(--card-border);
-    font-size: 16px; font-weight: 600;
-  }
-  .balance-box span { color: var(--green); }
-  .menu-btn {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px; border-radius: 12px;
-    background: var(--card-bg); border: 1px solid var(--card-border);
-    margin-bottom: 10px; cursor: pointer; font-size: 15px; font-weight: 500;
-    box-shadow: var(--shadow);
-  }
-  .menu-btn:active { transform: scale(0.98); }
   .item {
-    padding: 12px; border-radius: 12px; background: var(--card-bg); margin-bottom: 8px;
+    padding: 10px; border-radius: 10px; background: var(--card-bg); margin-bottom: 8px;
     display: flex; justify-content: space-between; align-items: center;
-    box-shadow: var(--shadow);
   }
   .item .name { font-size: 14px; font-weight: 600; }
   .item .line { font-size: 12px; color: var(--muted); margin-top: 4px; }
   .remove {
-    width: 28px; height: 28px; border-radius: 8px; border: none;
+    width: 26px; height: 26px; border-radius: 6px; border: none;
     background: var(--remove-bg); color: var(--remove-text); cursor: pointer;
   }
   .totals { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--divider); font-size: 14px; }
   .totals .row { display: flex; justify-content: space-between; margin-bottom: 6px; }
   .totals .final { font-size: 17px; font-weight: 700; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--divider); }
-  .step { display: flex; gap: 10px; padding: 12px; border-radius: 12px; background: var(--card-bg); margin-bottom: 8px; box-shadow: var(--shadow); }
+  .step { display: flex; gap: 10px; padding: 12px; border-radius: 10px; background: var(--card-bg); margin-bottom: 8px; }
   .step-num {
     flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
     background: var(--accent); color: var(--accent-text);
@@ -166,15 +120,11 @@
   .step-text { font-size: 13px; line-height: 1.45; }
   .link { color: var(--accent); text-decoration: none; font-weight: 600; }
   .amount { color: var(--green); font-weight: 700; }
-  .empty { color: var(--muted); text-align: center; padding: 30px 0; font-size: 14px; }
 </style>
 </head>
 <body class="dark">
 
 <div class="top-bar">
-  <div class="icon-btn" id="profileBtn" onclick="openProfile()">
-    <span id="profileIcon">👤</span>
-  </div>
   <div class="icon-btn" onclick="openSettings()">⚙️</div>
 </div>
 
@@ -183,7 +133,6 @@
 <div class="tabs">
   <button class="tab active" onclick="switchTab('eng', this)">🔧 Инженерия</button>
   <button class="tab" onclick="switchTab('gifts', this)">🎁 Подарки</button>
-  <button class="tab" onclick="switchTab('users', this)">🏪 Магазин пользователей</button>
 </div>
 
 <div class="tab-content active" id="tab-eng">
@@ -192,10 +141,6 @@
 
 <div class="tab-content" id="tab-gifts">
   <div class="grid" id="grid-gifts"></div>
-</div>
-
-<div class="tab-content" id="tab-users">
-  <div class="grid" id="grid-users"></div>
 </div>
 
 <button class="floating" onclick="openCart()">
@@ -207,7 +152,7 @@
 
     <!-- КОРЗИНА -->
     <div id="cartView" style="display:none;">
-      <h2>🛒 Корзина</h2>
+      <h2>Корзина</h2>
       <div id="cartContent"></div>
     </div>
 
@@ -223,86 +168,19 @@
       <button class="close" onclick="closeProduct()">← Назад</button>
     </div>
 
-    <!-- ПРОФИЛЬ -->
-    <div id="profileView" style="display:none;">
-      <div class="user-card">
-        <img id="userAvatar" class="avatar" src="" alt="" style="display:none;">
-        <div class="user-name" id="userName">Загрузка...</div>
-        <div class="user-id" id="userId">@...</div>
-        <div class="balance-box">Баланс: <span id="userBalance">0</span> ⭐</div>
-      </div>
-
-      <div class="menu-btn" onclick="openMyProducts()">
-        <span>📦 Мои товары</span>
-        <span>→</span>
-      </div>
-      <div class="menu-btn" onclick="openAddProduct()">
-        <span>➕ Выставить товар</span>
-        <span>→</span>
-      </div>
-      <div class="menu-btn" onclick="openTopUp()">
-        <span>💳 Пополнить баланс</span>
-        <span>→</span>
-      </div>
-
-      <button class="close" onclick="closeAll()">Закрыть</button>
-    </div>
-
-    <!-- МОИ ТОВАРЫ -->
-    <div id="myProductsView" style="display:none;">
-      <h2>📦 Мои товары</h2>
-      <div id="myProductsList"></div>
-      <button class="close" onclick="openProfile()">← Назад</button>
-    </div>
-
-    <!-- ДОБАВИТЬ ТОВАР -->
-    <div id="addProductView" style="display:none;">
-      <h2>➕ Новый товар</h2>
-      <input id="npName" type="text" placeholder="Название">
-      <textarea id="npDesc" placeholder="Описание" rows="3"></textarea>
-      <input id="npPrice" type="number" placeholder="Цена в звёздах">
-      <input id="npImage" type="text" placeholder="Ссылка на картинку (https://...)">
-      <select id="npSection">
-        <option value="eng">🔧 Инженерия</option>
-        <option value="gifts">🎁 Подарки</option>
-        <option value="users">🏪 Магазин пользователей</option>
-      </select>
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;background:var(--card-bg);margin-bottom:10px;box-shadow:var(--shadow);">
-        <span style="font-size:14px;">Брать комиссию 20%</span>
-        <input id="npCommission" type="checkbox" style="width:auto;margin:0;">
-      </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;background:var(--card-bg);margin-bottom:10px;box-shadow:var(--shadow);">
-        <span style="font-size:14px;">Можно купить несколько</span>
-        <input id="npMultiple" type="checkbox" style="width:auto;margin:0;">
-      </div>
-      <button class="order" onclick="submitProduct()">Выставить</button>
-      <button class="close" onclick="openProfile()">← Назад</button>
-    </div>
-
-    <!-- ПОПОЛНИТЬ БАЛАНС -->
-    <div id="topUpView" style="display:none;">
-      <h2>💳 Пополнить баланс</h2>
-      <p style="color:var(--muted);font-size:13px;margin-bottom:14px;">
-        Введите сумму в звёздах. Откроется окно оплаты Telegram.
-      </p>
-      <input id="topUpAmount" type="number" placeholder="Сумма в звёздах">
-      <button class="order" style="background:var(--green);" onclick="topUpBalance()">Оплатить звёздами ⭐</button>
-      <button class="close" onclick="openProfile()">← Назад</button>
-    </div>
-
     <!-- НАСТРОЙКИ -->
     <div id="settingsView" style="display:none;">
       <h2>⚙️ Настройки</h2>
-      <p style="font-size:13px;color:var(--muted);margin:0 0 10px 0;">Тема оформления</p>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 8px 0;">Тема оформления</p>
       <div style="display:flex;gap:10px;margin-bottom:10px;">
-        <div onclick="setTheme('dark')" style="flex:1;padding:10px;border-radius:12px;background:var(--card-bg);border:2px solid transparent;cursor:pointer;text-align:center;font-size:12px;box-shadow:var(--shadow);">
-          <div style="height:40px;background:#0f0f14;border-radius:8px;margin-bottom:6px;"></div>Тёмная
+        <div onclick="setTheme('dark')" style="flex:1;padding:10px;border-radius:10px;background:var(--card-bg);border:2px solid transparent;cursor:pointer;text-align:center;font-size:12px;">
+          <div style="height:40px;background:#0f0f14;border-radius:6px;margin-bottom:6px;"></div>Тёмная
         </div>
-        <div onclick="setTheme('light')" style="flex:1;padding:10px;border-radius:12px;background:var(--card-bg);border:2px solid transparent;cursor:pointer;text-align:center;font-size:12px;box-shadow:var(--shadow);">
-          <div style="height:40px;background:#fff;border-radius:8px;margin-bottom:6px;border:1px solid #ccc;"></div>Светлая
+        <div onclick="setTheme('light')" style="flex:1;padding:10px;border-radius:10px;background:var(--card-bg);border:2px solid transparent;cursor:pointer;text-align:center;font-size:12px;">
+          <div style="height:40px;background:#fff;border-radius:6px;margin-bottom:6px;border:1px solid #ccc;"></div>Светлая
         </div>
-        <div onclick="setTheme('beige')" style="flex:1;padding:10px;border-radius:12px;background:var(--card-bg);border:2px solid transparent;cursor:pointer;text-align:center;font-size:12px;box-shadow:var(--shadow);">
-          <div style="height:40px;background:#f0e6d2;border-radius:8px;margin-bottom:6px;"></div>Бежевая
+        <div onclick="setTheme('beige')" style="flex:1;padding:10px;border-radius:10px;background:var(--card-bg);border:2px solid transparent;cursor:pointer;text-align:center;font-size:12px;">
+          <div style="height:40px;background:#f0e6d2;border-radius:6px;margin-bottom:6px;"></div>Бежевая
         </div>
       </div>
       <button class="close" onclick="closeAll()">Закрыть</button>
@@ -335,10 +213,168 @@
    const tg = window.Telegram?.WebApp;
   if (tg) { tg.ready(); tg.expand(); }
 
-  let currentUser = null;
   let cart = [];
-  let allProducts = [];
   let currentProductId = null;
+
+  // ========== ТВОИ ТОВАРЫ ==========
+  const products = [
+    // === Инженерия ===
+    {
+      id: 1, section: "eng",
+      name: "софт sessionspam", price: 50,
+      description: "спам софт тг входы",
+      image: "https://i.ibb.co/pvzsB1FL/CYalvo-Egq-Vn1-VCg8x-B0-NU917s-hc4-ABoy-VPdb-B07x-G7-Emih-Or-C3w-INl-CXj-Yx-Wiyf-Exy-Bui-Katy-Vi-Vyf4-JFx.jpg",
+      noCommission: true, allowMultiple: false
+    },
+    {
+      id: 8, section: "eng",
+      name: "бот с огромной бд", price: 15,
+      description: "огромная бд и красивое оформление",
+      image: "https://i.ibb.co/4gYfpxDy/Zu-ACr-DRmwt-N6j-YR5-69n7-Vz-N7-Pose-Edb-M4jpcc-6-Xe-WJ2-Rqimaio-O8-JRivk4-Mp8wx5-PTSrkc-K6cem-TGw7-Ctt-PT83.jpg",
+      noCommission: true, allowMultiple: false
+    },
+    {
+      id: 13, section: "eng",
+      name: "бот осинт", price: 15,
+      description: "средняя бд, красивое оформление",
+      image: "https://i.ibb.co/d4Z5MSzD/IMG-20260930-234626-968.jpg",
+      noCommission: true, allowMultiple: false
+    },
+    {
+      id: 15, section: "eng",
+      name: "приват", price: 25,
+      description: "приватка с кучей интересного",
+      image: "https://i.ibb.co/jkkGBtrN/b19c0ca2f3415ad13f14c100f7133e07.jpg",
+      noCommission: true, allowMultiple: false
+    },
+    {
+      id: 16, section: "eng",
+      name: "бот химера", price: 15,
+      description: "только бот без вопросов и тд",
+      image: "https://i.ibb.co/gMP30vFT/IMG-20261001-135425-006.jpg",
+      noCommission: true, allowMultiple: false
+    },
+    {
+      id: 17, section: "eng",
+      name: "logger бот", price: 15,
+      description: "бот логгер",
+      image: "https://i.ibb.co/60bYwKsj/channels4-profile.jpg",
+      oldPrice: 25,
+      noCommission: true, allowMultiple: false
+    },
+    {
+      id: 18, section: "eng",
+      name: "бот с хорошим бд", price: 15,
+      description: "средняя бд хороший бот",
+      image: "https://i.ibb.co/dJm4DBHG/IMG-20261001-132658-129.jpg",
+      oldPrice: 25,
+      noCommission: true, allowMultiple: false
+    },
+    {
+      id: 19, section: "eng",
+      name: "накрут бот", price: 15,
+      description: "накрут подписчики, лайки, реак не только тг",
+      image: "https://i.ibb.co/jPXb25jf/IMG-20261001-140715-429.jpg",
+      noCommission: true, allowMultiple: false
+    },
+    {
+      id: 2, section: "eng",
+      name: "Деф", price: 150,
+      description: "защита от krayverov",
+      image: "https://i.ibb.co/1tSVqcPq/Rz9qwz6-TROMzj-GQ0-Qe-AGTCjdo3y4-KJe-Im-Hkz-Db-Wqt-E8hig-q-Chhb77-Okx-NDdfv-ZXugl-Bmn-SPW0-NNyi-KYYGRVOv.jpg",
+      noCommission: true, allowMultiple: false
+    },
+    {
+      id: 3, section: "eng",
+      name: "обучение", price: 150,
+      description: "обучение от Krayverov",
+      image: "https://i.ibb.co/1tSVqcPq/Rz9qwz6-TROMzj-GQ0-Qe-AGTCjdo3y4-KJe-Im-Hkz-Db-Wqt-E8hig-q-Chhb77-Okx-NDdfv-ZXugl-Bmn-SPW0-NNyi-KYYGRVOv.jpg",
+      noCommission: true, allowMultiple: false
+    },
+    {
+      id: 9, section: "eng",
+      name: "Деф (Arhangel)", price: 550,
+      description: "деф от @Arhangelovofficiall",
+      image: "https://i.ibb.co/FqyLCnc4/ne-CZ-uejag-Jkpk2-UJ4-GS-8-Ohg0-IAI-YAfh-CBHweh-IGRm-RTGm0x-Ea-Hy-Pda4utdv-PD3dyteqr-BWcn69rhc03c-Ouz-Jk.jpg",
+      noCommission: false, allowMultiple: false,
+      priceOptions: [
+        { label: "Навсегда", value: 550 },
+        { label: "Месяц",    value: 215 },
+        { label: "Пол года", value: 325 },
+        { label: "Год",      value: 425 }
+      ]
+    },
+    {
+      id: 10, section: "eng",
+      name: "обучение (Arhangel)", price: 500,
+      description: "обучение от @Arhangelovofficiall",
+      image: "https://i.ibb.co/FqyLCnc4/ne-CZ-uejag-Jkpk2-UJ4-GS-8-Ohg0-IAI-YAfh-CBHweh-IGRm-RTGm0x-Ea-Hy-Pda4utdv-PD3dyteqr-BWcn69rhc03c-Ouz-Jk.jpg",
+      noCommission: false, allowMultiple: false
+    },
+    {
+      id: 11, section: "eng",
+      name: "Деф (с!иртей)", price: 175,
+      description: "деф от @bitchverification",
+      image: "https://i.ibb.co/hRBc1Nvg/IMG-20260930-214744-552.jpg",
+      noCommission: false, allowMultiple: false,
+      priceOptions: [
+        { label: "Разово",    value: 175 },
+        { label: "Месяц",     value: 250 },
+        { label: "3 месяца",  value: 400 },
+        { label: "Год",       value: 550 },
+        { label: "Навсегда",  value: 650 },
+        { label: "VIP",       value: 1100 }
+      ]
+    },
+    {
+      id: 12, section: "eng",
+      name: "обучение (с!иртей)", price: 525,
+      description: "обучение от @bitchverification",
+      image: "https://i.ibb.co/hRBc1Nvg/IMG-20260930-214744-552.jpg",
+      noCommission: false, allowMultiple: false,
+      priceOptions: [
+        { label: "Обучение", value: 1300 },
+        { label: "zн0z (от аккаунта)", value: 250 },
+        { label: "Приват", value: 525 }
+      ]
+    },
+    // === Подарки ===
+    {
+      id: 4, section: "gifts",
+      name: "мишка от Krayverov", price: 25,
+      description: "мишка с росписью",
+      image: "https://i.ibb.co/Pz0H462D/OTEnx61k-1932-l-Pq-Bzb-XT0acqxlc-K9f-FXCMf-Dks-Wu-M3s-II63-I3-Zlh-CLb-VRF9-Ge-XNsj3lc-N0-IMqn-UR-Jj6-P-k.jpg",
+      noCommission: true, allowMultiple: true
+    },
+    {
+      id: 5, section: "gifts",
+      name: "рандом NFT", price: 600,
+      description: "рандомное нфт выше или ниже своей цены",
+      image: "https://i.ibb.co/Gvz3JYLB/50y-CDLtp-SN-f2-Lwl0-Sa2roya8n-RUYcie6-p7-BKlp-Qdo4g-JQMMOp-QKQ1jn-WHt2s-Seu-Um0sy-Rm-ZNV0chtj8x-J-gg.jpg",
+      noCommission: false, allowMultiple: true
+    },
+    {
+      id: 6, section: "gifts",
+      name: "рандом BLACK NFT", price: 3500,
+      description: "рандом нфт выше или ниже своей цены на блэк фоне",
+      image: "https://i.ibb.co/7tNrN4Kt/Lg-Kj-XAj-Ea-Bpprqqyrxq1x8k-PE-q1-U9ghy0b7utxnald3a-KSPv-Iof5-L4-BKeirm5-Z27-Bv6-L-lw1ze61ri-QAKBzp-RD.jpg",
+      noCommission: false, allowMultiple: true
+    },
+    {
+      id: 7, section: "gifts",
+      name: "бот по дешёвой аренде нфт", price: 15,
+      description: "2 звезды за 3 дня нфт",
+      image: "https://i.ibb.co/bMWjbZLY/GMSBiqf-SCob-Aq1ejk-JEy-AXke8-K4n-Tpy-Wo-Zv-W3zh-F30-Edh8plgf7-Zw-MDo-Ks-Tx-LDX8d-Z3-Nw-Cu7j-Gr-IFPx-Kr.jpg",
+      noCommission: true, allowMultiple: false
+    },
+    {
+      id: 14, section: "gifts",
+      name: "способ заработка звёзд", price: 15,
+      description: "5 минут - 15 звёзд",
+      image: "https://i.ibb.co/Pvv7c8sS/IMG-20260930-235100-900.jpg",
+      noCommission: true, allowMultiple: false
+    }
+  ];
 
   // ==== ТЕМА ====
   (function() {
@@ -355,54 +391,7 @@
     localStorage.setItem("krayv-theme", name);
   }
 
-  // ==== ЗАГРУЗКА ПОЛЬЗОВАТЕЛЯ ====
-  async function loadUser() {
-    if (!tg?.initDataUnsafe?.user) return;
-    const u = tg.initDataUnsafe.user;
-
-    try {
-      const res = await fetch(SERVER + "/api/user/" + u.id);
-      if (res.ok) {
-        currentUser = await res.json();
-      } else {
-        // Если пользователя нет — сервер создаст его при следующем заходе в бота
-        currentUser = {
-          id: u.id,
-          username: u.username,
-          first_name: u.first_name,
-          last_name: u.last_name,
-          balance: 0
-        };
-      }
-    } catch (e) {
-      currentUser = {
-        id: u.id,
-        username: u.username,
-        first_name: u.first_name,
-        last_name: u.last_name,
-        balance: 0
-      };
-    }
-
-    // Показываем аватарку в кнопке профиля
-    if (currentUser.photo_url) {
-      document.getElementById("profileIcon").outerHTML =
-        `<img src="${currentUser.photo_url}" alt="" style="width:100%;height:100%;object-fit:cover;">`;
-    }
-  }
-
-  // ==== ЗАГРУЗКА ТОВАРОВ ====
-  async function loadProducts() {
-    try {
-      const res = await fetch(SERVER + "/api/products");
-      allProducts = await res.json();
-    } catch (e) {
-      allProducts = [];
-    }
-    renderGrid();
-  }
-
-  // ==== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ====
+  // ==== ВКЛАДКИ ====
   function switchTab(section, btn) {
     document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
     document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
@@ -410,7 +399,7 @@
     document.getElementById("tab-" + section).classList.add("active");
   }
 
-  // ==== ОТКРЫТИЕ/ЗАКРЫТИЕ ОКНА ====
+  // ==== ОКНА ====
   function openSheet(viewId) {
     document.querySelectorAll(".sheet > div").forEach(el => el.style.display = "none");
     document.getElementById(viewId).style.display = "block";
@@ -426,174 +415,30 @@
     document.getElementById("overlay").classList.remove("open");
   }
 
-  // ==== ПРОФИЛЬ ====
-  async function openProfile() {
-    await loadUser();
-    if (!currentUser) return;
-
-    const avatar = document.getElementById("userAvatar");
-    const name = document.getElementById("userName");
-    const uid = document.getElementById("userId");
-    const bal = document.getElementById("userBalance");
-
-    if (currentUser.photo_url) {
-      avatar.src = currentUser.photo_url;
-      avatar.style.display = "block";
-    } else {
-      avatar.style.display = "none";
-    }
-
-    const fullName = ((currentUser.first_name || "") + " " + (currentUser.last_name || "")).trim() || "Без имени";
-    name.textContent = fullName;
-    uid.textContent = "@" + (currentUser.username || "нет ника");
-    bal.textContent = currentUser.balance || 0;
-
-    openSheet("profileView");
+  function openSettings() {
+    openSheet("settingsView");
   }
 
-  // ==== МОИ ТОВАРЫ ====
-  async function openMyProducts() {
-    if (!currentUser) return;
-    await loadProducts();
-
-    const mine = allProducts.filter(p => p.owner_id === currentUser.id);
-    const list = document.getElementById("myProductsList");
-
-    if (mine.length === 0) {
-      list.innerHTML = '<p class="empty">У вас пока нет товаров</p>';
-    } else {
-      list.innerHTML = mine.map(p => `
-        <div class="item">
-          <div>
-            <div class="name">${p.name}</div>
-            <div class="line">${p.price} ⭐</div>
-          </div>
-          <button class="remove" onclick="deleteProduct(${p.id})">✕</button>
-        </div>
-      `).join("");
-    }
-
-    openSheet("myProductsView");
-  }
-
-  async function deleteProduct(id) {
-    if (!confirm("Удалить товар?")) return;
-    try {
-      await fetch(SERVER + "/api/products/" + id, { method: "DELETE" });
-      openMyProducts();
-      loadProducts();
-    } catch (e) {}
-  }
-
-  // ==== ДОБАВЛЕНИЕ ТОВАРА ====
-  function openAddProduct() {
-    document.getElementById("npName").value = "";
-    document.getElementById("npDesc").value = "";
-    document.getElementById("npPrice").value = "";
-    document.getElementById("npImage").value = "";
-    document.getElementById("npCommission").checked = false;
-    document.getElementById("npMultiple").checked = false;
-    openSheet("addProductView");
-  }
-
-  async function submitProduct() {
-    if (!currentUser) return;
-    const name = document.getElementById("npName").value.trim();
-    const desc = document.getElementById("npDesc").value.trim();
-    const price = parseInt(document.getElementById("npPrice").value);
-    const image = document.getElementById("npImage").value.trim();
-    const section = document.getElementById("npSection").value;
-    const noCommission = document.getElementById("npCommission").checked ? 0 : 1;
-    const multiple = document.getElementById("npMultiple").checked ? 1 : 0;
-
-    if (!name || !price) {
-      alert("Заполните название и цену");
-      return;
-    }
-
-    try {
-      const res = await fetch(SERVER + "/api/products", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          owner_id: currentUser.id,
-          name, description: desc, price,
-          image: image || "https://picsum.photos/seed/" + Date.now() + "/400/300",
-          section, no_commission: noCommission, allow_multiple: multiple
-        })
-      });
-
-      if (res.ok) {
-        alert("Товар выставлен!");
-        openProfile();
-        loadProducts();
-      } else {
-        alert("Ошибка при выставлении");
-      }
-    } catch (e) {
-      alert("Ошибка сети");
-    }
-  }
-
-  // ==== ПОПОЛНЕНИЕ БАЛАНСА ====
-  function openTopUp() {
-    document.getElementById("topUpAmount").value = "";
-    openSheet("topUpView");
-  }
-
-  async function topUpBalance() {
-    const amount = parseInt(document.getElementById("topUpAmount").value);
-    if (!amount || amount < 1) {
-      alert("Введите сумму больше 0");
-      return;
-    }
-    if (!currentUser) return;
-
-    try {
-      const res = await fetch(SERVER + "/api/pay", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: currentUser.id,
-          amount: amount,
-          title: "Пополнение баланса"
-        })
-      });
-
-      const data = await res.json();
-
-      if (data.invoiceLink && tg?.openInvoice) {
-        tg.openInvoice(data.invoiceLink, (status) => {
-          if (status === "paid") {
-            alert("Оплачено! Баланс пополнен 🎉");
-            setTimeout(loadUser, 1500);
-          }
-        });
-      } else {
-        alert("Не удалось создать счёт");
-      }
-    } catch (e) {
-      alert("Ошибка сети");
-    }
-  }
-   // ==== ОТРИСОВКА ТОВАРОВ ====
+  // ==== РЕНДЕР ====
   function formatPrice(p) {
+    if (p.priceOptions && p.priceOptions.length) {
+      const min = Math.min(...p.priceOptions.map(o => o.value));
+      return "от " + min + " ⭐";
+    }
     return p.price + " ⭐";
   }
 
   function renderSection(sectionId, containerId) {
-    const items = allProducts.filter(p => p.section === sectionId);
-    const el = document.getElementById(containerId);
-    if (!el) return;
-
-    if (items.length === 0) {
-      el.innerHTML = '<p class="empty">Пока нет товаров</p>';
-      return;
-    }
-
-    el.innerHTML = items.map(p => {
+    const items = products.filter(p => p.section === sectionId);
+    document.getElementById(containerId).innerHTML = items.map(p => {
       const inCart = cart.find(i => i.product.id === p.id);
-      const disabled = inCart && !p.allow_multiple;
+      const disabled = inCart && !p.allowMultiple;
+      let btnText = "В корзину";
+      if (inCart && !p.allowMultiple) btnText = "Уже в корзине";
+      if (inCart && p.allowMultiple) btnText = "Ещё +1";
+
+      let priceHtml = formatPrice(p);
+      if (p.oldPrice) priceHtml += ` <span class="old-price">${p.oldPrice} ⭐</span>`;
 
       return `
       <div class="card">
@@ -601,10 +446,10 @@
           <img src="${p.image}" alt="${p.name}">
         </div>
         <h3 onclick="openProduct(${p.id})">${p.name}</h3>
-        <p class="desc" onclick="openProduct(${p.id})">${p.description || ''}</p>
-        <p class="price" onclick="openProduct(${p.id})">${formatPrice(p)}</p>
+        <p class="desc" onclick="openProduct(${p.id})">${p.description}</p>
+        <p class="price" onclick="openProduct(${p.id})">${priceHtml}</p>
         <button onclick="event.stopPropagation(); addToCart(${p.id})" ${disabled ? "disabled" : ""}>
-          ${disabled ? "Уже в корзине" : "В корзину"}
+          ${btnText}
         </button>
       </div>`;
     }).join("");
@@ -613,23 +458,26 @@
   function renderGrid() {
     renderSection("eng", "grid-eng");
     renderSection("gifts", "grid-gifts");
-    renderSection("users", "grid-users");
   }
-
-  // ==== КАРТОЧКА ТОВАРА ====
+   // ==== КАРТОЧКА ТОВАРА ====
   function openProduct(id) {
-    const p = allProducts.find(x => x.id === id);
+    const p = products.find(x => x.id === id);
     if (!p) return;
     currentProductId = id;
 
     document.getElementById("pBigImg").src = p.image;
     document.getElementById("pName").textContent = p.name;
-    document.getElementById("pDesc").textContent = p.description || "";
-    document.getElementById("pPrice").textContent = formatPrice(p);
+    document.getElementById("pDesc").textContent = p.description;
+
+    let priceHtml = formatPrice(p);
+    if (p.priceOptions && p.priceOptions.length) {
+      priceHtml = p.priceOptions.map(o => `${o.label}: ${o.value} ⭐`).join(" • ");
+    }
+    document.getElementById("pPrice").textContent = priceHtml;
 
     const btn = document.getElementById("pAddBtn");
     const inCart = cart.find(i => i.product.id === id);
-    if (inCart && !p.allow_multiple) {
+    if (inCart && !p.allowMultiple) {
       btn.disabled = true;
       btn.textContent = "Уже в корзине";
     } else {
@@ -645,17 +493,22 @@
     else closeAll();
   }
 
+  function addFromProductView() {
+    if (currentProductId) addToCart(currentProductId);
+    closeProduct();
+  }
+
   // ==== КОРЗИНА ====
   function getItem(id) {
     return cart.find(i => i.product.id === id);
   }
 
   function addToCart(id) {
-    const p = allProducts.find(x => x.id === id);
+    const p = products.find(x => x.id === id);
     if (!p) return;
     const existing = getItem(id);
     if (existing) {
-      if (!p.allow_multiple) return;
+      if (!p.allowMultiple) return;
       existing.qty += 1;
     } else {
       cart.push({ product: p, qty: 1 });
@@ -664,14 +517,9 @@
     renderCart();
   }
 
-  function addFromProductView() {
-    if (currentProductId) addToCart(currentProductId);
-    closeProduct();
-  }
-
   function increaseQty(id) {
     const item = getItem(id);
-    if (!item || !item.product.allow_multiple) return;
+    if (!item || !item.product.allowMultiple) return;
     item.qty += 1;
     renderGrid();
     renderCart();
@@ -698,7 +546,7 @@
 
   function commissionSum() {
     return cart.reduce((s, i) => {
-      if (i.product.no_commission) return s;
+      if (i.product.noCommission) return s;
       return s + i.product.price * i.qty * 0.2;
     }, 0);
   }
@@ -718,17 +566,17 @@
     if (!c) return;
 
     if (cart.length === 0) {
-      c.innerHTML = '<p class="empty">Пока пусто</p>' +
+      c.innerHTML = '<p style="color:var(--muted);text-align:center;padding:20px 0;">Пока пусто</p>' +
                     '<button class="close" onclick="closeAll()">Закрыть</button>';
       return;
     }
 
     let itemsHtml = cart.map(i => {
       const lineSum = i.product.price * i.qty;
-      const comm = i.product.no_commission ? 0 : lineSum * 0.2;
-      const commText = i.product.no_commission ? "Без комиссии" : "+ " + comm.toFixed(0) + " ⭐ комиссия";
+      const comm = i.product.noCommission ? 0 : lineSum * 0.2;
+      const commText = i.product.noCommission ? "Без комиссии" : "+ " + comm.toFixed(0) + " ⭐ комиссия";
 
-      const qtyControls = i.product.allow_multiple ? `
+      const qtyControls = i.product.allowMultiple ? `
         <div style="display:flex;align-items:center;gap:6px;margin-top:8px;">
           <button onclick="decreaseQty(${i.product.id})" style="width:26px;height:26px;border-radius:6px;border:none;background:var(--qty-bg);color:var(--text);cursor:pointer;">−</button>
           <span style="min-width:24px;text-align:center;">${i.qty}</span>
@@ -769,53 +617,41 @@
     openSheet("cartView");
   }
 
-  // ==== ОФОРМЛЕНИЕ ЗАКАЗА ====
+  // ==== ОФОРМЛЕНИЕ ====
   function showCheckout() {
     if (cart.length === 0) return;
-
-    const sellers = {};
-    cart.forEach(i => {
-      const sellerId = i.product.owner_id;
-      const lineSum = i.product.price * i.qty;
-      const comm = i.product.no_commission ? 0 : lineSum * 0.2;
-      const total = lineSum + comm;
-      if (!sellers[sellerId]) sellers[sellerId] = 0;
-      sellers[sellerId] += total;
-    });
-
-    let details = "<b>Оплата для продавцов:</b><br>";
-    for (const sellerId in sellers) {
-      details += `• продавец ID ${sellerId}: <span class="amount">${sellers[sellerId].toFixed(0)}</span> ⭐<br>`;
-    }
-
+    const total = totalSum();
     document.getElementById("payToBlock").innerHTML =
-      "Оплатите звёздами — после оплаты заказ придёт продавцу.";
-    document.getElementById("payDetailsBlock").innerHTML = details;
-
+      "Оплатите <span class='amount'>" + total.toFixed(0) + " ⭐</span> — откроется окно оплаты Telegram.";
+    document.getElementById("payDetailsBlock").innerHTML =
+      "После оплаты заказ будет отправлен. Спасибо за покупку!";
     openSheet("checkoutView");
   }
 
   function backToCart() {
     openCart();
   }
-   async function payWithStars() {
-    if (!currentUser) {
-      alert("Профиль не загружен. Открой приложение через бота.");
-      return;
-    }
-
+   // ==== ОПЛАТА ЗВЁЗДАМИ ====
+  async function payWithStars() {
     const total = totalSum();
     if (total <= 0) {
       alert("Корзина пуста");
       return;
     }
 
+    if (!tg?.initDataUnsafe?.user) {
+      alert("Открой приложение через Telegram-бота");
+      return;
+    }
+
+    const userId = tg.initDataUnsafe.user.id;
+
     try {
       const res = await fetch(SERVER + "/api/pay", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: currentUser.id,
+          userId: userId,
           amount: Math.round(total),
           title: "Заказ в Krayv Shop"
         })
@@ -835,13 +671,13 @@
 
       tg.openInvoice(data.invoiceLink, async (status) => {
         if (status === "paid") {
-          // Сохраняем заказ
+          // Отправляем заказ на сервер
           try {
             await fetch(SERVER + "/api/order", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                userId: currentUser.id,
+                userId: userId,
                 items: cart.map(i => ({
                   id: i.product.id,
                   name: i.product.name,
@@ -858,7 +694,6 @@
           renderGrid();
           renderCart();
           closeAll();
-          setTimeout(loadUser, 1500);
         } else if (status === "cancelled") {
           alert("Оплата отменена");
         } else {
@@ -871,13 +706,8 @@
   }
 
   // ==== СТАРТ ====
-  async function init() {
-    await loadUser();
-    await loadProducts();
-    renderCart();
-  }
-
-  init();
+  renderGrid();
+  renderCart();
 </script>
 
 </body>
