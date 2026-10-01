@@ -290,10 +290,11 @@
     {
       id: 20, section: "eng",
       name: "Реклама", price: 0,
-      description: "реклама вашего проекта в нашем маркете",
+      description: "@FizClard — лучший магазин физических аккаунтов. Если ищешь хороший физический аккаунт дёшево — тебе туда!",
       image: "https://i.ibb.co/Pvr5psMC/IMG-20261001-102942.jpg",
       isNegotiable: true,
-      noCommission: true, allowMultiple: false
+      noCommission: true, allowMultiple: false,
+      seller: "clardus"
     },
     {
       id: 2, section: "eng",
@@ -315,6 +316,7 @@
       description: "деф от @Arhangelovofficiall",
       image: "https://i.ibb.co/FqyLCnc4/ne-CZ-uejag-Jkpk2-UJ4-GS-8-Ohg0-IAI-YAfh-CBHweh-IGRm-RTGm0x-Ea-Hy-Pda4utdv-PD3dyteqr-BWcn69rhc03c-Ouz-Jk.jpg",
       noCommission: false, allowMultiple: false,
+      seller: "arhangel",
       priceOptions: [
         { label: "Навсегда", value: 550 },
         { label: "Месяц",    value: 215 },
@@ -327,7 +329,8 @@
       name: "обучение (Arhangel)", price: 500,
       description: "обучение от @Arhangelovofficiall",
       image: "https://i.ibb.co/FqyLCnc4/ne-CZ-uejag-Jkpk2-UJ4-GS-8-Ohg0-IAI-YAfh-CBHweh-IGRm-RTGm0x-Ea-Hy-Pda4utdv-PD3dyteqr-BWcn69rhc03c-Ouz-Jk.jpg",
-      noCommission: false, allowMultiple: false
+      noCommission: false, allowMultiple: false,
+      seller: "arhangel"
     },
     {
       id: 11, section: "eng",
@@ -335,6 +338,7 @@
       description: "деф от @bitchverification",
       image: "https://i.ibb.co/hRBc1Nvg/IMG-20260930-214744-552.jpg",
       noCommission: false, allowMultiple: false,
+      seller: "bitch",
       priceOptions: [
         { label: "Разово",    value: 175 },
         { label: "Месяц",     value: 250 },
@@ -350,6 +354,7 @@
       description: "обучение от @bitchverification",
       image: "https://i.ibb.co/hRBc1Nvg/IMG-20260930-214744-552.jpg",
       noCommission: false, allowMultiple: false,
+      seller: "bitch",
       priceOptions: [
         { label: "Обучение", value: 1300 },
         { label: "zн0z (от аккаунта)", value: 250 },
@@ -696,15 +701,17 @@
   function showCheckout() {
     if (cart.length === 0) return;
 
-    const sellers = { krayv: 0, arhangel: 0, bitch: 0 };
+    const sellers = { krayv: 0, arhangel: 0, bitch: 0, clardus: 0 };
     cart.forEach(i => {
       const unitPrice = i.chosenPrice || i.product.price;
       const lineSum = unitPrice * i.qty;
       const comm = i.product.noCommission ? 0 : lineSum * 0.2;
       const total = lineSum + comm;
-      let seller = "krayv";
-      if (i.product.name && i.product.name.includes("Arhangel")) seller = "arhangel";
-      else if (i.product.name && i.product.name.includes("с!иртей")) seller = "bitch";
+      let seller = i.product.seller || "krayv";
+      if (!i.product.seller) {
+        if (i.product.name && i.product.name.includes("Arhangel")) seller = "arhangel";
+        else if (i.product.name && i.product.name.includes("с!иртей")) seller = "bitch";
+      }
       sellers[seller] += total;
     });
 
@@ -712,7 +719,8 @@
     const links = {
       krayv: "@krayverov",
       arhangel: "@Arhangelovofficiall",
-      bitch: "@bitchverification"
+      bitch: "@bitchverification",
+      clardus: "@clardus"
     };
 
     const names = active.map(k => `<span class="link">${links[k]}</span>`).join(" и ");
