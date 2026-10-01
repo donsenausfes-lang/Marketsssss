@@ -241,6 +241,21 @@
     font-size: 16px; font-weight: 700; cursor: pointer;
   }
   .add-btn:disabled { background: var(--qty-bg); color: var(--muted); cursor: not-allowed; }
+  .promo-block { margin-top: 12px; display: flex; gap: 8px; }
+  .promo-block input {
+    flex: 1; padding: 10px 12px; border-radius: 10px;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg); color: var(--text);
+    font-size: 14px; outline: none;
+  }
+  .promo-block button {
+    padding: 10px 16px; border-radius: 10px; border: none;
+    background: var(--accent); color: var(--accent-text);
+    font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  .promo-msg { font-size: 12px; margin-top: 6px; min-height: 16px; }
+  .promo-msg.ok { color: var(--green); }
+  .promo-msg.err { color: #e74c3c; }
 </style>
 </head>
 <body class="dark">
@@ -542,10 +557,18 @@
   let currentProductId = null;
   let selectedOptionIdx = 0;
 
+  // Промокод
+  let promoMsg = "";
+  let promoMsgType = "";
+  const PROMO_KEY_ACTIVE = "krayvPromoActive";
+  const PROMO_KEY_USED   = "krayvPromoUsed";
+  let promoActive = localStorage.getItem(PROMO_KEY_ACTIVE) === "1";
+  let promoUsed   = localStorage.getItem(PROMO_KEY_USED)   === "1";
+
   const tg = window.Telegram?.WebApp;
   if (tg) { tg.ready(); tg.expand(); }
 
-  // Восстановление темы при загрузке
+  // Восстановление темы
   (function() {
     const saved = localStorage.getItem("krayv-theme") || "dark";
     document.body.classList.remove("dark", "beige");
@@ -590,6 +613,55 @@
     if (el) el.classList.add("active");
   }
 
+  function isPromoEligible(p) {
+    if (p.section === "gifts") return false;
+    if (p.seller === "arhangel") return false;
+    if (p.seller === "bitch") return false;
+    return true;
+  }
+
+  function applyPromo() {
+    if (promoUsed) {
+      promoMsg = "Промокод уже был использован";
+      promoMsgType = "err";
+      renderCart();
+      return;
+    }
+    if (promoActive) {
+      promoMsg = "Промокод уже активирован";
+      promoMsgType = "ok";
+      renderCart();
+      return;
+    }
+    const input = document.getElementById("promoInput");
+    const code = (input?.value || "").trim().toLowerCase();
+    if (code === "krayvstoreopen") {
+      promoActive = true;
+      localStorage.setItem(PROMO_KEY_ACTIVE, "1");
+      promoMsg = "Промокод активирован! Скидка 5% на 1 товар";
+      promoMsgType = "ok";
+    } else {
+      promoMsg = "Неверный промокод";
+      promoMsgType = "err";
+    }
+    renderGrid();
+    renderCart();
+  }
+
+  function promoDiscount() {
+    if (!promoActive || promoUsed) return 0;
+    const item = cart.find(i => isPromoEligible(i.product));
+    if (!item) return 0;
+    const unitPrice = item.chosenPrice || item.product.price;
+    return unitPrice * item.qty * 0.05;
+  }
+
+  function promoDiscountItemId() {
+    if (!promoActive || promoUsed) return null;
+    const item = cart.find(i => isPromoEligible(i.product));
+    return item ? item.product.id : null;
+  }
+
   function getItem(id) { return cart.find(i => i.product.id === id); }
 
   function formatPrice(p) {
@@ -609,6 +681,16 @@
       if (inCart && !p.allowMultiple) btnText = "Уже в корзине";
       if (inCart && p.allowMultiple) btnText = "Ещё +1";
 
+      const showPromoStrike = promoActive && !promoUsed && isPromoEligible(p);
+
+      let priceHtml;
+      if (showPromoStrike && !p.priceOptions) {
+        priceHtml = `<span class="old-price">${p.price} ⭐</span> ${(p.price * 0.95).toFixed(0)} ⭐`;
+      } else {
+        priceHtml = formatPrice(p);
+        if (p.oldPrice) priceHtml += ` <span class="old-price">${p.oldPrice} ⭐</span>`;
+      }
+
       return `
       <div class="card">
         <div class="card-img-wrap" onclick="openProduct(${p.id})">
@@ -616,10 +698,7 @@
         </div>
         <h3 onclick="openProduct(${p.id})">${p.name}</h3>
         <p class="desc" onclick="openProduct(${p.id})">${p.description}</p>
-        <p class="price" onclick="openProduct(${p.id})">
-          ${formatPrice(p)}
-          ${p.oldPrice ? `<span class="old-price">${p.oldPrice} ⭐</span>` : ""}
-        </p>
+        <p class="price" onclick="openProduct(${p.id})">${priceHtml}</p>
         <button onclick="event.stopPropagation(); addToCart(${p.id})" ${disabled ? "disabled" : ""}>
           ${btnText}
         </button>
@@ -643,6 +722,7 @@
     document.getElementById("pDesc").textContent = p.description;
 
     const block = document.getElementById("pPriceBlock");
+    const showPromoStrike = promoActive && !promoUsed && isPromoEligible(p);
 
     if (p.priceOptions && p.priceOptions.length) {
       block.innerHTML = `
@@ -657,12 +737,14 @@
         </div>
       `;
     } else {
-      block.innerHTML = `
-        <p class="product-single-price">
-          ${p.price} ⭐
-          ${p.oldPrice ? `<span class="old-price">${p.oldPrice} ⭐</span>` : ""}
-        </p>
-      `;
+      let priceHtml;
+      if (showPromoStrike) {
+        priceHtml = `<span class="old-price">${p.price} ⭐</span> ${(p.price * 0.95).toFixed(0)} ⭐`;
+      } else {
+        priceHtml = `${p.price} ⭐`;
+        if (p.oldPrice) priceHtml += ` <span class="old-price">${p.oldPrice} ⭐</span>`;
+      }
+      block.innerHTML = `<p class="product-single-price">${priceHtml}</p>`;
     }
 
     const btn = document.getElementById("pAddBtn");
@@ -776,7 +858,7 @@
       return s + linePrice(i) * 0.2;
     }, 0);
   }
-  function totalSum() { return baseSum() + commissionSum(); }
+  function totalSum() { return baseSum() + commissionSum() - promoDiscount(); }
   function totalCount() { return cart.reduce((s, i) => s + i.qty, 0); }
    function renderCart() {
     document.getElementById("cartCount").textContent =
@@ -787,6 +869,8 @@
       return;
     }
 
+    const discItemId = promoDiscountItemId();
+
     let itemsHtml = cart.map(i => {
       const unitPrice = i.chosenPrice || i.product.price;
       const lineSum = unitPrice * i.qty;
@@ -796,6 +880,7 @@
         : "+ " + comm.toFixed(0) + " ⭐ комиссия";
 
       const variantText = i.optionLabel ? ` (${i.optionLabel})` : "";
+      const hasPromo = i.product.id === discItemId;
 
       const qtyControls = i.product.allowMultiple ? `
         <div class="qty-controls">
@@ -809,7 +894,7 @@
       <div class="item">
         <div class="row1">
           <div style="flex:1">
-            <div class="name">${i.product.name}${variantText}</div>
+            <div class="name">${i.product.name}${variantText}${hasPromo ? ' <span style="color:var(--green);font-size:11px;">−5%</span>' : ''}</div>
             <div class="line">${unitPrice} ⭐ × ${i.qty} = ${lineSum} ⭐</div>
             <div class="line">${commText}</div>
             ${qtyControls}
@@ -821,12 +906,31 @@
 
     const base = baseSum();
     const comm = commissionSum();
-    const total = base + comm;
+    const disc = promoDiscount();
+    const total = base + comm - disc;
+
+    let promoHtml;
+    if (promoUsed) {
+      promoHtml = `<div class="promo-msg err">Промокод уже использован</div>`;
+    } else if (promoActive) {
+      promoHtml = `<div class="promo-msg ok">Промокод krayvstoreopen активирован (−5% на 1 товар)</div>`;
+    } else {
+      promoHtml = `
+        <div class="promo-block">
+          <input id="promoInput" type="text" placeholder="Промокод" value="">
+          <button onclick="applyPromo()">Применить</button>
+        </div>
+        <div class="promo-msg ${promoMsgType}">${promoMsg}</div>
+      `;
+    }
+
+    itemsHtml += promoHtml;
 
     itemsHtml += `
       <div class="totals">
         <div class="row"><span>Товары:</span><span>${base} ⭐</span></div>
         ${comm > 0 ? `<div class="row commission"><span>Комиссия Telegram (+20%):</span><span>+${comm.toFixed(0)} ⭐</span></div>` : ""}
+        ${disc > 0 ? `<div class="row commission"><span>Промокод −5%:</span><span>−${disc.toFixed(0)} ⭐</span></div>` : ""}
         <div class="row final"><span>Итого:</span><span>${total.toFixed(0)} ⭐</span></div>
       </div>
       <button class="order" onclick="showCheckout()">Оформить заказ</button>
@@ -880,6 +984,17 @@
       sums[seller] += total;
     });
 
+    // Применяем скидку промокода
+    const disc = promoDiscount();
+    if (disc > 0) {
+      const discItem = cart.find(i => isPromoEligible(i.product));
+      if (discItem) {
+        const seller = discItem.product.seller || "krayv";
+        sums[seller] -= disc;
+        if (sums[seller] < 0) sums[seller] = 0;
+      }
+    }
+
     const active = Object.keys(sums).filter(k => sums[k] > 0);
     const links = {
       krayv: "@krayverov",
@@ -903,6 +1018,14 @@
       });
       html += "И подпишите, что именно вы купили у каждого.";
       document.getElementById("payDetailsBlock").innerHTML = html;
+    }
+
+    // Сжигаем промокод
+    if (promoActive && !promoUsed) {
+      promoUsed = true;
+      promoActive = false;
+      localStorage.setItem(PROMO_KEY_USED, "1");
+      localStorage.removeItem(PROMO_KEY_ACTIVE);
     }
 
     document.getElementById("cartView").style.display = "none";
