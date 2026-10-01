@@ -46,6 +46,27 @@
     font-size: 26px; font-weight: 800; color: #2481cc;
     margin: 0 0 14px 0; letter-spacing: 0.5px;
   }
+  .ad-banner {
+    display: flex; gap: 10px; align-items: center;
+    padding: 10px; margin-bottom: 16px;
+    border-radius: 12px; background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    cursor: pointer; transition: transform 0.15s ease;
+  }
+  .ad-banner:active { transform: scale(0.98); }
+  .ad-banner img {
+    width: 60px; height: 60px; object-fit: cover;
+    border-radius: 8px; flex-shrink: 0;
+  }
+  .ad-text { flex: 1; min-width: 0; }
+  .ad-title {
+    font-size: 13px; font-weight: 800; color: #1a5fa8;
+    margin: 0 0 3px 0;
+  }
+  .ad-desc {
+    font-size: 11px; color: var(--muted);
+    line-height: 1.35; margin: 0;
+  }
   .tabs {
     display: flex; gap: 8px; margin-bottom: 18px;
     border-bottom: 1px solid var(--divider);
@@ -196,6 +217,14 @@
 
 <h1 class="shop-title">Krayv Shop</h1>
 
+<div class="ad-banner" onclick="openAd()">
+  <img src="https://i.ibb.co/Pvr5psMC/IMG-20261001-102942.jpg" alt="Реклама">
+  <div class="ad-text">
+    <div class="ad-title">@FizClard — лучший магазин физических аккаунтов</div>
+    <div class="ad-desc">Если ищешь хороший физический аккаунт дёшево — тебе туда!</div>
+  </div>
+</div>
+
 <div class="tabs">
   <button class="tab active" onclick="switchTab('eng', this)">🔧 Инженерия</button>
   <button class="tab" onclick="switchTab('gifts', this)">🎁 Подарки</button>
@@ -230,6 +259,29 @@
       <div id="pPriceBlock"></div>
       <button class="add-btn" id="pAddBtn" onclick="addFromProductView()">В корзину</button>
       <button class="close" onclick="closeProduct()">← Назад</button>
+    </div>
+
+    <div id="adView" class="checkout" style="display:none;">
+      <h2>@FizClard</h2>
+      <p class="subtitle">Лучший магазин физических аккаунтов</p>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">Напишите в личные сообщения <span class="link">@clardus</span></div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">Договоритесь о покупке физического аккаунта</div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">При покупке <b>ОБЯЗАТЕЛЬНО</b> подпишите, что вы с <b>Krayv shop</b></div>
+      </div>
+
+      <div class="final-note">Удачных покупок 🛍️</div>
+      <button class="close" onclick="backFromAd()">← Назад</button>
     </div>
 
     <div id="checkoutView" class="checkout" style="display:none;">
@@ -304,19 +356,12 @@
       image: "https://i.ibb.co/d4Z5MSzD/IMG-20260930-234626-968.jpg",
       noCommission: true, allowMultiple: false, seller: "krayv"
     },
-   {
-  id: 15, section: "eng",
-  name: "приват",
-  price: 25,
-  description: "приватка с кучей интересного",
-  image: "https://i.ibb.co/jkkGBtrN/b19c0ca2f3415ad13f14c100f7133e07.jpg",
-  noCommission: true, allowMultiple: false, seller: "krayv"
-},
     {
-      id: 14, section: "gifts",
-      name: "способ заработка звёзд", price: 15,
-      description: "5 минут - 15 звёзд",
-      image: "https://i.ibb.co/Pvv7c8sS/IMG-20260930-235100-900.jpg",
+      id: 15, section: "eng",
+      name: "приват",
+      price: 25,
+      description: "приватка с кучей интересного",
+      image: "https://i.ibb.co/jkkGBtrN/b19c0ca2f3415ad13f14c100f7133e07.jpg",
       noCommission: true, allowMultiple: false, seller: "krayv"
     },
     {
@@ -397,6 +442,13 @@
       name: "бот по дешёвой аренде нфт", price: 15,
       description: "2 звезды за 3 дня нфт",
       image: "https://i.ibb.co/bMWjbZLY/GMSBiqf-SCob-Aq1ejk-JEy-AXke8-K4n-Tpy-Wo-Zv-W3zh-F30-Edh8plgf7-Zw-MDo-Ks-Tx-LDX8d-Z3-Nw-Cu7j-Gr-IFPx-Kr.jpg",
+      noCommission: true, allowMultiple: false, seller: "krayv"
+    },
+    {
+      id: 14, section: "gifts",
+      name: "способ заработка звёзд", price: 15,
+      description: "5 минут - 15 звёзд",
+      image: "https://i.ibb.co/Pvv7c8sS/IMG-20260930-235100-900.jpg",
       noCommission: true, allowMultiple: false, seller: "krayv"
     }
   ];
@@ -500,6 +552,7 @@
 
     document.getElementById("cartView").style.display = "none";
     document.getElementById("checkoutView").style.display = "none";
+    document.getElementById("adView").style.display = "none";
     document.getElementById("productView").style.display = "block";
     document.getElementById("overlay").classList.add("open");
   }
@@ -598,7 +651,8 @@
     }, 0);
   }
   function totalSum() { return baseSum() + commissionSum(); }
-  function totalCount() { return cart.reduce((s, i) => s + i.qty, 0); }  function renderCart() {
+  function totalCount() { return cart.reduce((s, i) => s + i.qty, 0); }
+   function renderCart() {
     document.getElementById("cartCount").textContent =
       totalCount() > 0 ? "(" + totalCount() + ")" : "";
     const c = document.getElementById("cartContent");
@@ -659,6 +713,7 @@
     renderCart();
     document.getElementById("productView").style.display = "none";
     document.getElementById("checkoutView").style.display = "none";
+    document.getElementById("adView").style.display = "none";
     document.getElementById("cartView").style.display = "block";
     document.getElementById("overlay").classList.add("open");
   }
@@ -669,6 +724,18 @@
   }
 
   function closeAll() {
+    document.getElementById("overlay").classList.remove("open");
+  }
+
+  function openAd() {
+    document.getElementById("cartView").style.display = "none";
+    document.getElementById("productView").style.display = "none";
+    document.getElementById("checkoutView").style.display = "none";
+    document.getElementById("adView").style.display = "block";
+    document.getElementById("overlay").classList.add("open");
+  }
+
+  function backFromAd() {
     document.getElementById("overlay").classList.remove("open");
   }
 
@@ -712,6 +779,7 @@
 
     document.getElementById("cartView").style.display = "none";
     document.getElementById("productView").style.display = "none";
+    document.getElementById("adView").style.display = "none";
     document.getElementById("checkoutView").style.display = "block";
   }
 
