@@ -8,346 +8,167 @@
 <style>
   * { box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease, transform 0.15s ease; }
   :root {
-    --bg: #0d0d12;
-    --bg-card: #17171f;
-    --bg-hover: #1e1e28;
-    --text: #fff;
-    --muted: #8b8b9e;
-    --accent: #2a7de1;
-    --accent-hover: #3d8ff0;
+    --bg: #0d0d12; --bg-card: #17171f; --bg-hover: #1e1e28;
+    --text: #fff; --muted: #8b8b9e;
+    --accent: #2a7de1; --accent-hover: #3d8ff0;
     --accent-text: #fff;
     --border: rgba(255,255,255,0.06);
     --green: #22c55e;
   }
   body.light {
-    --bg: #f5f6fa;
-    --bg-card: #ffffff;
-    --bg-hover: #eef0f7;
-    --text: #111;
-    --muted: #737380;
-    --border: rgba(0,0,0,0.08);
+    --bg: #f5f6fa; --bg-card: #ffffff; --bg-hover: #eef0f7;
+    --text: #111; --muted: #737380; --border: rgba(0,0,0,0.08);
   }
   body.beige {
-    --bg: #ece2cf;
-    --bg-card: #f6ecdb;
-    --bg-hover: #e6d9c0;
-    --text: #3a2f1e;
-    --muted: #8a7a5c;
-    --border: rgba(0,0,0,0.1);
+    --bg: #ece2cf; --bg-card: #f6ecdb; --bg-hover: #e6d9c0;
+    --text: #3a2f1e; --muted: #8a7a5c; --border: rgba(0,0,0,0.1);
   }
   body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    padding: 0 0 100px 0;
-    min-height: 100vh;
+    margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    padding: 0 0 100px 0; min-height: 100vh;
   }
-
-  /* ===== ШАПКА ===== */
   .header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 14px 20px;
-    background: var(--bg);
-    position: sticky;
-    top: 0;
-    z-index: 50;
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 20px; background: var(--bg);
+    position: sticky; top: 0; z-index: 50;
     border-bottom: 1px solid var(--border);
   }
-  .logo {
-    display: flex; align-items: center; gap: 8px;
-    font-size: 20px; font-weight: 800; color: var(--text);
-  }
+  .logo { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 800; color: var(--text); }
   .logo-icon {
-    width: 32px; height: 32px; border-radius: 8px;
-    background: var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
+    width: 32px; height: 32px; border-radius: 8px; background: var(--accent);
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
   }
-  .nav {
-    display: flex; gap: 4px;
-    margin-left: 20px;
-  }
+  .nav { display: flex; gap: 4px; margin-left: 20px; }
   .nav-item {
     padding: 8px 14px; border-radius: 8px;
-    font-size: 14px; font-weight: 600;
-    color: var(--muted); cursor: pointer;
-    background: transparent; border: none;
-    transition: all 0.2s ease;
+    font-size: 14px; font-weight: 600; color: var(--muted);
+    cursor: pointer; background: transparent; border: none;
   }
-  .nav-item.active {
-    color: var(--text);
-    background: var(--bg-card);
-  }
-  .nav-item:hover { color: var(--text); }
+  .nav-item.active { color: var(--text); background: var(--bg-card); }
   .search-box {
-    flex: 1;
-    max-width: 480px;
+    flex: 1; max-width: 480px;
     display: flex; align-items: center; gap: 10px;
-    padding: 10px 16px;
-    background: var(--bg-card);
-    border-radius: 10px;
-    margin-left: auto;
+    padding: 10px 16px; background: var(--bg-card);
+    border-radius: 10px; margin-left: auto;
     border: 1px solid var(--border);
   }
-  .search-box input {
-    flex: 1; border: none; background: transparent;
-    color: var(--text); font-size: 14px; outline: none;
-  }
+  .search-box input { flex: 1; border: none; background: transparent; color: var(--text); font-size: 14px; outline: none; }
   .search-box input::placeholder { color: var(--muted); }
   .search-icon { color: var(--muted); font-size: 16px; }
   .header-btn {
     width: 40px; height: 40px; border-radius: 50%;
     background: var(--bg-card); border: 1px solid var(--border);
     display: flex; align-items: center; justify-content: center;
-    font-size: 18px; cursor: pointer; color: var(--text);
-    flex-shrink: 0;
+    font-size: 18px; cursor: pointer; color: var(--text); flex-shrink: 0;
   }
-  .header-btn:hover { background: var(--bg-hover); }
-
-  /* ===== ОСНОВНОЙ ЛЭЙАУТ ===== */
-  .main {
-    display: flex; gap: 20px;
-    padding: 20px;
-    align-items: flex-start;
-  }
-
-  /* ===== САЙДБАР ===== */
+  .main { display: flex; gap: 20px; padding: 20px; align-items: flex-start; }
   .sidebar {
     width: 220px; flex-shrink: 0;
-    background: var(--bg-card);
-    border-radius: 14px;
-    padding: 14px;
+    background: var(--bg-card); border-radius: 14px; padding: 14px;
     border: 1px solid var(--border);
-    position: sticky;
-    top: 80px;
+    position: sticky; top: 80px;
   }
   .sidebar-btn {
-    width: 100%;
-    display: flex; align-items: center; gap: 10px;
-    padding: 12px;
-    border-radius: 10px;
-    background: transparent;
-    border: none;
-    color: var(--text);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-bottom: 4px;
-    text-align: left;
+    width: 100%; display: flex; align-items: center; gap: 10px;
+    padding: 12px; border-radius: 10px;
+    background: transparent; border: none;
+    color: var(--text); font-size: 14px; font-weight: 600;
+    cursor: pointer; margin-bottom: 4px; text-align: left;
   }
   .sidebar-btn:hover { background: var(--bg-hover); }
-  .sidebar-btn.active {
-    background: var(--accent);
-    color: var(--accent-text);
-  }
-  .sidebar-filter {
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
-  }
+  .sidebar-btn.active { background: var(--accent); color: var(--accent-text); }
+  .sidebar-filter { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
   .filter-title {
-    font-size: 12px; font-weight: 700;
-    color: var(--muted);
-    margin-bottom: 10px;
-    display: flex; justify-content: space-between;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-size: 12px; font-weight: 700; color: var(--muted);
+    margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;
   }
-  .price-inputs {
-    display: flex; gap: 8px;
-    margin-bottom: 10px;
-  }
+  .price-inputs { display: flex; gap: 8px; margin-bottom: 10px; }
   .price-inputs input {
-    flex: 1;
-    padding: 8px 10px;
-    border-radius: 8px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-size: 13px;
-    outline: none;
-    width: 100%;
+    flex: 1; padding: 8px 10px; border-radius: 8px;
+    background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); font-size: 13px; outline: none; width: 100%;
   }
   .apply-btn {
-    width: 100%;
-    padding: 10px;
-    border-radius: 8px;
-    background: var(--accent);
-    color: var(--accent-text);
-    border: none;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
+    width: 100%; padding: 10px; border-radius: 8px;
+    background: var(--accent); color: var(--accent-text);
+    border: none; font-size: 13px; font-weight: 600; cursor: pointer;
   }
-  .apply-btn:hover { background: var(--accent-hover); }
-
-  /* ===== СЕТКА ТОВАРОВ ===== */
   .content { flex: 1; min-width: 0; }
-  .section-title {
-    font-size: 18px; font-weight: 700;
-    margin: 0 0 16px 0;
-    color: var(--text);
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 14px;
-    align-items: stretch;
-  }
+  .section-title { font-size: 18px; font-weight: 700; margin: 0 0 16px 0; color: var(--text); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; align-items: stretch; }
   .card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 10px;
-    display: flex; flex-direction: column;
-    height: 100%;
-    cursor: pointer;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 10px;
+    display: flex; flex-direction: column; height: 100%; cursor: pointer;
   }
   .card:hover { background: var(--bg-hover); }
   .card-img-wrap {
-    width: 100%;
-    aspect-ratio: 1/1;
-    overflow: hidden;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    background: #000;
-    flex-shrink: 0;
-    position: relative;
+    width: 100%; aspect-ratio: 1/1; overflow: hidden;
+    border-radius: 10px; margin-bottom: 10px; background: #000; flex-shrink: 0;
   }
-  .card img {
-    width: 100%; height: 100%;
-    object-fit: cover; display: block;
-  }
+  .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .card h3 {
-    font-size: 15px;
-    font-weight: 700;
-    margin: 0 0 4px 0;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 15px; font-weight: 700; margin: 0 0 4px 0; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .card .desc {
-    font-size: 12px;
-    color: var(--muted);
-    margin: 0 0 10px 0;
-    flex: 1;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    font-size: 12px; color: var(--muted); margin: 0 0 10px 0; flex: 1;
+    overflow: hidden; display: -webkit-box;
+    -webkit-line-clamp: 2; -webkit-box-orient: vertical;
   }
-  .card-bottom {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: auto;
-  }
+  .card-bottom { display: flex; align-items: center; gap: 8px; margin-top: auto; }
   .price-pill {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 14px;
-    border-radius: 10px;
-    background: var(--accent);
-    color: var(--accent-text);
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    border: none;
-    transition: background 0.2s ease;
+    flex: 1; display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; border-radius: 10px;
+    background: var(--accent); color: var(--accent-text);
+    font-size: 14px; font-weight: 700; cursor: pointer; border: none;
   }
   .price-pill:hover { background: var(--accent-hover); }
-  .price-pill:disabled {
-    background: var(--bg-hover);
-    color: var(--muted);
-    cursor: not-allowed;
-  }
+  .price-pill:disabled { background: var(--bg-hover); color: var(--muted); cursor: not-allowed; }
   .cart-btn {
-    width: 38px; height: 38px;
-    border-radius: 10px;
-    background: var(--bg);
-    border: 1px solid var(--border);
+    width: 38px; height: 38px; border-radius: 10px;
+    background: var(--bg); border: 1px solid var(--border);
     display: flex; align-items: center; justify-content: center;
-    font-size: 16px;
-    cursor: pointer;
-    color: var(--text);
-    flex-shrink: 0;
+    font-size: 16px; cursor: pointer; color: var(--text); flex-shrink: 0;
   }
   .cart-btn:hover { background: var(--bg-hover); }
-  .old-price {
-    font-size: 11px;
-    color: var(--muted);
-    text-decoration: line-through;
-    margin-left: 6px;
-    font-weight: 400;
-  }
-
-  /* ===== ПЛАВАЮЩАЯ КОРЗИНА ===== */
+  .old-price { font-size: 11px; color: var(--muted); text-decoration: line-through; margin-left: 6px; font-weight: 400; }
   .floating {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    padding: 14px 24px;
-    border-radius: 30px;
-    border: none;
-    background: var(--accent);
-    color: var(--accent-text);
-    font-size: 15px;
-    font-weight: 700;
+    position: fixed; bottom: 24px; right: 24px;
+    padding: 14px 24px; border-radius: 30px; border: none;
+    background: var(--accent); color: var(--accent-text);
+    font-size: 15px; font-weight: 700;
     box-shadow: 0 8px 24px rgba(42,125,225,0.4);
-    cursor: pointer;
-    z-index: 50;
+    cursor: pointer; z-index: 50;
   }
-  .floating:hover { background: var(--accent-hover); }
-
-  /* ===== ОВЕРЛЕЙ ===== */
   .overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.6);
-    display: none;
-    align-items: flex-end;
-    z-index: 100;
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+    display: none; align-items: flex-end; z-index: 100;
     backdrop-filter: blur(4px);
   }
   .overlay.open { display: flex; }
   .sheet {
-    width: 100%;
-    max-height: 92vh;
-    overflow-y: auto;
-    background: var(--bg);
-    border-top-left-radius: 24px;
-    border-top-right-radius: 24px;
+    width: 100%; max-height: 92vh; overflow-y: auto;
+    background: var(--bg); border-top-left-radius: 24px; border-top-right-radius: 24px;
     padding: 24px;
-    animation: slideUp 0.3s ease;
   }
-  @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   .sheet h2 { margin: 0 0 14px 0; font-size: 20px; font-weight: 700; }
   .close {
     width: 100%; margin-top: 14px; padding: 12px;
     border-radius: 12px; border: none;
     background: var(--bg-card); color: var(--text);
-    font-size: 14px; font-weight: 600;
-    cursor: pointer;
+    font-size: 14px; font-weight: 600; cursor: pointer;
   }
-  .close:hover { background: var(--bg-hover); }
   .order {
     width: 100%; margin-top: 14px; padding: 14px;
     border-radius: 12px; border: none;
     background: var(--accent); color: var(--accent-text);
-    font-size: 15px; font-weight: 700;
-    cursor: pointer;
+    font-size: 15px; font-weight: 700; cursor: pointer;
   }
-  .order:hover { background: var(--accent-hover); }
   .item {
     padding: 12px; border-radius: 12px;
-    background: var(--bg-card);
-    margin-bottom: 8px;
+    background: var(--bg-card); margin-bottom: 8px;
     display: flex; justify-content: space-between; align-items: center;
     border: 1px solid var(--border);
   }
@@ -355,8 +176,7 @@
   .item .line { font-size: 12px; color: var(--muted); margin-top: 4px; }
   .remove {
     width: 30px; height: 30px; border-radius: 8px; border: none;
-    background: rgba(255,80,80,0.15); color: #ff6b6b;
-    cursor: pointer; font-size: 14px;
+    background: rgba(255,80,80,0.15); color: #ff6b6b; cursor: pointer; font-size: 14px;
   }
   .totals { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 14px; }
   .totals .row { display: flex; justify-content: space-between; margin-bottom: 8px; }
@@ -374,14 +194,12 @@
   .price-option {
     padding: 14px; border-radius: 12px; background: var(--bg-card);
     border: 2px solid transparent; cursor: pointer;
-    display: flex; justify-content: space-between; align-items: center; font-size: 15px;
-    margin-bottom: 8px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 15px; margin-bottom: 8px;
   }
   .price-option.selected { border-color: var(--accent); }
   .price-option .label { font-weight: 600; }
   .price-option .value { font-weight: 700; color: var(--accent); }
-
-  /* ===== МОБИЛЬНАЯ ВЕРСИЯ ===== */
   @media (max-width: 768px) {
     .nav { display: none; }
     .search-box { max-width: none; }
@@ -518,7 +336,7 @@
   let selectedOptionIdx = 0;
   let currentSection = "eng";
   let currentSort = "default";
-</script>
+
   const products = [
     {
       id: 1, section: "eng",
@@ -710,21 +528,16 @@
     localStorage.setItem("krayv-theme", name);
   }
 
-  function setSort(sort) {
-    currentSort = sort;
-    renderGrid();
-  }
+  function setSort(sort) { currentSort = sort; renderGrid(); }
 
   function switchTab(section, btn) {
     currentSection = section;
     document.querySelectorAll(".nav-item").forEach(t => t.classList.remove("active"));
     document.querySelectorAll(".sidebar-btn").forEach(t => t.classList.remove("active"));
     btn.classList.add("active");
-
     document.getElementById("grid-eng").style.display = section === "eng" ? "grid" : "none";
     document.getElementById("grid-gifts").style.display = section === "gifts" ? "grid" : "none";
     document.getElementById("sectionTitle").textContent = section === "eng" ? "🔧 Инженерия" : "🎁 Подарки";
-
     renderGrid();
   }
 
@@ -739,13 +552,9 @@
     closeAll();
   }
 
-  function closeAll() {
-    document.getElementById("overlay").classList.remove("open");
-  }
+  function closeAll() { document.getElementById("overlay").classList.remove("open"); }
 
-  function openSettings() {
-    openSheet("settingsView");
-  }
+  function openSettings() { openSheet("settingsView"); }
 
   function formatPrice(p) {
     if (p.isNegotiable) return "Договорная";
@@ -758,7 +567,6 @@
 
   function getFilteredProducts(section) {
     let items = products.filter(p => p.section === section);
-
     const search = (document.getElementById("searchInput")?.value || "").toLowerCase();
     if (search) {
       items = items.filter(p =>
@@ -766,22 +574,15 @@
         (p.description || "").toLowerCase().includes(search)
       );
     }
-
     const min = parseInt(document.getElementById("priceMin")?.value) || 0;
     const max = parseInt(document.getElementById("priceMax")?.value) || 999999;
     items = items.filter(p => {
       const price = p.priceOptions && p.priceOptions.length
-        ? Math.min(...p.priceOptions.map(o => o.value))
-        : p.price;
+        ? Math.min(...p.priceOptions.map(o => o.value)) : p.price;
       return price >= min && price <= max;
     });
-
-    if (currentSort === "price-asc") {
-      items.sort((a, b) => a.price - b.price);
-    } else if (currentSort === "price-desc") {
-      items.sort((a, b) => b.price - a.price);
-    }
-
+    if (currentSort === "price-asc") items.sort((a, b) => a.price - b.price);
+    else if (currentSort === "price-desc") items.sort((a, b) => b.price - a.price);
     return items;
   }
 
@@ -789,19 +590,15 @@
     const items = getFilteredProducts(sectionId);
     const el = document.getElementById(containerId);
     if (!el) return;
-
     if (items.length === 0) {
       el.innerHTML = '<p style="color:var(--muted);text-align:center;padding:40px 0;grid-column:1/-1;">Ничего не найдено</p>';
       return;
     }
-
     el.innerHTML = items.map(p => {
       const inCart = cart.find(i => i.product.id === p.id);
       const disabled = inCart && !p.allowMultiple;
-
       let priceDisplay = formatPrice(p);
       if (p.oldPrice) priceDisplay = `<span>${p.price} ⭐</span><span class="old-price">${p.oldPrice} ⭐</span>`;
-
       return `
       <div class="card">
         <div class="card-img-wrap" onclick="openProduct(${p.id})">
@@ -823,18 +620,15 @@
     renderSection("eng", "grid-eng");
     renderSection("gifts", "grid-gifts");
   }
-         function openProduct(id) {
+   function openProduct(id) {
     const p = products.find(x => x.id === id);
     if (!p) return;
     currentProductId = id;
     selectedOptionIdx = 0;
-
     document.getElementById("pBigImg").src = p.image;
     document.getElementById("pName").textContent = p.name;
     document.getElementById("pDesc").textContent = p.description;
-
     const block = document.getElementById("pPriceBlock");
-
     if (p.priceOptions && p.priceOptions.length) {
       block.innerHTML = p.priceOptions.map((o, idx) => `
         <div class="price-option ${idx === 0 ? 'selected' : ''}"
@@ -852,7 +646,6 @@
       }
       block.innerHTML = `<p style="font-size:22px;font-weight:800;color:var(--accent);margin:0 0 16px 0;">${priceHtml}</p>`;
     }
-
     const btn = document.getElementById("pAddBtn");
     const inCart = cart.find(i => i.product.id === id);
     if (inCart && !p.allowMultiple) {
@@ -862,7 +655,6 @@
       btn.disabled = false;
       btn.textContent = "В корзину";
     }
-
     openSheet("productView");
   }
 
@@ -940,9 +732,7 @@
     renderCart();
   }
 
-  function linePrice(item) {
-    return (item.chosenPrice || item.product.price) * item.qty;
-  }
+  function linePrice(item) { return (item.chosenPrice || item.product.price) * item.qty; }
   function baseSum() { return cart.reduce((s, i) => s + linePrice(i), 0); }
   function commissionSum() {
     return cart.reduce((s, i) => {
@@ -954,17 +744,13 @@
   function totalCount() { return cart.reduce((s, i) => s + i.qty, 0); }
 
   function renderCart() {
-    document.getElementById("cartCount").textContent =
-      totalCount() > 0 ? "(" + totalCount() + ")" : "";
+    document.getElementById("cartCount").textContent = totalCount() > 0 ? "(" + totalCount() + ")" : "";
     const c = document.getElementById("cartContent");
     if (!c) return;
-
     if (cart.length === 0) {
-      c.innerHTML = '<p style="color:var(--muted);text-align:center;padding:20px 0;">Пока пусто</p>' +
-                    '<button class="close" onclick="closeAll()">Закрыть</button>';
+      c.innerHTML = '<p style="color:var(--muted);text-align:center;padding:20px 0;">Пока пусто</p><button class="close" onclick="closeAll()">Закрыть</button>';
       return;
     }
-
     let itemsHtml = cart.map(i => {
       const unitPrice = i.chosenPrice || i.product.price;
       const lineSum = unitPrice * i.qty;
@@ -976,8 +762,7 @@
           <button onclick="decreaseQty(${i.product.id})" style="width:28px;height:28px;border-radius:8px;border:none;background:var(--bg);color:var(--text);cursor:pointer;">−</button>
           <span style="min-width:24px;text-align:center;">${i.qty}</span>
           <button onclick="increaseQty(${i.product.id})" style="width:28px;height:28px;border-radius:8px;border:none;background:var(--bg);color:var(--text);cursor:pointer;">+</button>
-        </div>
-      ` : "";
+        </div>` : "";
       return `
       <div class="item">
         <div style="flex:1;">
@@ -989,11 +774,9 @@
         <button class="remove" onclick="removeFromCart(${i.product.id})">✕</button>
       </div>`;
     }).join("");
-
     const base = baseSum();
     const comm = commissionSum();
     const total = base + comm;
-
     itemsHtml += `
       <div class="totals">
         <div class="row"><span>Товары:</span><span>${base} ⭐</span></div>
@@ -1001,22 +784,16 @@
         <div class="row final"><span>Итого:</span><span>${total.toFixed(0)} ⭐</span></div>
       </div>
       <button class="order" onclick="showCheckout()">Оформить заказ</button>
-      <button class="close" onclick="closeAll()">Закрыть</button>
-    `;
+      <button class="close" onclick="closeAll()">Закрыть</button>`;
     c.innerHTML = itemsHtml;
   }
 
-  function openCart() {
-    renderCart();
-    openSheet("cartView");
-  }
+  function openCart() { renderCart(); openSheet("cartView"); }
 
   function showCheckout() {
     if (cart.length === 0) return;
-
     const sellers = { krayv: 0, arhangel: 0, bitch: 0, clardus: 0 };
     let hasAd = false;
-
     cart.forEach(i => {
       const unitPrice = i.chosenPrice || i.product.price;
       const lineSum = unitPrice * i.qty;
@@ -1030,45 +807,30 @@
       if (seller === "clardus") hasAd = true;
       sellers[seller] += total;
     });
-
     const active = Object.keys(sellers).filter(k => sellers[k] > 0);
-    const links = {
-      krayv: "@krayverov",
-      arhangel: "@Arhangelovofficiall",
-      bitch: "@bitchverification",
-      clardus: "@clardus"
-    };
-
+    const links = { krayv: "@krayverov", arhangel: "@Arhangelovofficiall", bitch: "@bitchverification", clardus: "@clardus" };
     if (hasAd) {
-      document.getElementById("payToBlock").innerHTML =
-        "Напишите в личку <span class='link'>@clardus</span>";
-      document.getElementById("payDetailsBlock").innerHTML =
-        "Обсудите с ним условия рекламы и отправьте звёзды подарками.";
+      document.getElementById("payToBlock").innerHTML = "Напишите в личку <span class='link'>@clardus</span>";
+      document.getElementById("payDetailsBlock").innerHTML = "Обсудите с ним условия рекламы и отправьте звёзды подарками.";
     } else {
       const names = active.map(k => `<span class="link">${links[k]}</span>`).join(" и ");
       document.getElementById("payToBlock").innerHTML = "Напишите в личку " + names;
-
       if (active.length === 1) {
         const k = active[0];
         document.getElementById("payDetailsBlock").innerHTML =
-          `Отправьте звёзды подарками на сумму <span class="amount">${sellers[k].toFixed(0)}</span> ⭐ ` +
-          `на <span class="link">${links[k]}</span> и отметьте под 1 из подарков то, что вы купили.<br>` +
-          `Пример: колечко и ракету с подписью «за деф»`;
+          `Отправьте звёзды подарками на сумму <span class="amount">${sellers[k].toFixed(0)}</span> ⭐ на <span class="link">${links[k]}</span> и отметьте под 1 из подарков то, что вы купили.<br>Пример: колечко и ракету с подписью «за деф»`;
       } else {
         let html = "Отправьте звёзды подарками разным продавцам:<br>";
-        active.forEach(k => {
-          html += `• <span class="link">${links[k]}</span> — <span class="amount">${sellers[k].toFixed(0)}</span> ⭐<br>`;
-        });
+        active.forEach(k => { html += `• <span class="link">${links[k]}</span> — <span class="amount">${sellers[k].toFixed(0)}</span> ⭐<br>`; });
         html += "И подпишите, что именно вы купили у каждого.";
         document.getElementById("payDetailsBlock").innerHTML = html;
       }
     }
-
     openSheet("checkoutView");
   }
 
   function backToCart() { openCart(); }
-
+ 
   renderGrid();
   renderCart();
 </script>
